@@ -3,7 +3,7 @@ This module contains related classes and functions for validation.
 ## ModelAfterValidatorWithoutInfo
 
 ```python
-ModelAfterValidatorWithoutInfo = Callable[
+ModelAfterValidatorWithoutInfo: TypeAlias = Callable[
     [_ModelType], _ModelType
 ]
 
@@ -14,7 +14,7 @@ A `@model_validator` decorated function signature. This is used when `mode='afte
 ## ModelAfterValidator
 
 ```python
-ModelAfterValidator = Callable[
+ModelAfterValidator: TypeAlias = Callable[
     [_ModelType, ValidationInfo[Any]], _ModelType
 ]
 
@@ -152,19 +152,19 @@ Attributes:
 Example
 
 ```python
-from typing import Annotated, Union
+from typing import Annotated
 
 from pydantic import BaseModel, PlainValidator
 
 def validate(v: object) -> int:
     if not isinstance(v, (int, str)):
-        raise ValueError(f'Expected int or str, go {type(v)}')
+        raise ValueError(f'Expected int or str, got {type(v)}')
 
     return int(v) + 1
 
 MyInt = Annotated[
     int,
-    PlainValidator(validate, json_schema_input_type=Union[str, int]),  # (1)!
+    PlainValidator(validate, json_schema_input_type=str | int),  # (1)!
 ]
 
 class Model(BaseModel):
@@ -739,7 +739,7 @@ def model_validator(
                 category=PydanticDeprecatedSince212,
                 message=(
                     "Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. "
-                    f'See the documentation at https://docs.pydantic.dev/{version_short()}/concepts/validators/#model-after-validator.'
+                    f'See the documentation at https://pydantic.dev/docs/validation/{version_short()}/concepts/validators/#model-after-validator.'
                 ),
                 stacklevel=2,
             )

@@ -269,15 +269,14 @@ use_enum_values: bool
 
 ```
 
-Whether to populate models with the `value` property of enums, rather than the raw enum. This may be useful if you want to serialize `model.model_dump()` later. Defaults to `False`.
+Whether to populate models with the value property of enums, rather than the raw enum. This may be useful if you want to serialize the value later. Defaults to `False`.
 
 Note
 
-If you have an `Optional[Enum]` value that you set a default for, you need to use `validate_default=True` for said Field to ensure that the `use_enum_values` flag takes effect on the default, as extracting an enum's value occurs during validation, not serialization.
+If you have a field typed as an enum with a default value, the validate_default configuration needs to be set to ensure that the `use_enum_values` flag takes effect on the default, as extracting an enum's value occurs during validation, not serialization.
 
 ```python
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -290,7 +289,7 @@ class SomeModel(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     some_enum: SomeEnum
-    another_enum: Optional[SomeEnum] = Field(
+    another_enum: SomeEnum | None = Field(
         default=SomeEnum.FOO, validate_default=True
     )
 
@@ -729,6 +728,8 @@ The encoding of JSON serialized bytes. Defaults to `'utf8'`. Set equal to `val_j
 val_json_bytes: Literal['utf8', 'base64', 'hex']
 
 ```
+
+Added in v2.9.
 
 The encoding of JSON serialized bytes to decode. Defaults to `'utf8'`. Set equal to `ser_json_bytes` to get back an equal value after serialization round trip.
 
@@ -1351,6 +1352,15 @@ print(m.url)
 ```
 
 Added in v2.12.
+
+### polymorphic_serialization
+
+```python
+polymorphic_serialization: bool
+
+```
+
+Whether to use polymorphic serialization for subclasses of the model or Pydantic dataclass. Defaults to `False`.
 
 ## with_config
 

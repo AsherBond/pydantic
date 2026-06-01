@@ -64,9 +64,9 @@ Built-in type: str
 
 Strings support the following constraints:
 
-| Constraint | Description | JSON Schema | | --- | --- | --- | | `pattern` | A regex pattern that the string must match | [`pattern`](https://json-schema.org/understanding-json-schema/reference/string#regexp) keyword (see [note](#pattern-constraint-note) below). | | `min_length` | The minimum length of the string | [`minLength`](https://json-schema.org/understanding-json-schema/reference/string#length) keyword | | `max_length` | The maximum length of the string | [`maxLength`](https://json-schema.org/understanding-json-schema/reference/string#length) keyword | | `strip_whitespace` | Whether to remove leading and trailing whitespace | N/A | | `to_upper` | Whether to convert the string to uppercase | N/A | | `to_lower` | Whether to convert the string to lowercase | N/A |
+| Constraint | Description | JSON Schema | | --- | --- | --- | | `pattern` | A regex pattern that the string must match | [`pattern`](https://json-schema.org/understanding-json-schema/reference/string#regexp) keyword (see [note](#pattern-constraint-note) below). | | `min_length` | The minimum length of the string | [`minLength`](https://json-schema.org/understanding-json-schema/reference/string#length) keyword | | `max_length` | The maximum length of the string | [`maxLength`](https://json-schema.org/understanding-json-schema/reference/string#length) keyword | | `strip_whitespace` | Whether to remove leading and trailing whitespace | N/A | | `to_upper` | Whether to convert the string to uppercase | N/A | | `to_lower` | Whether to convert the string to lowercase | N/A | | `ascii_only` | Whether to allow only ASCII characters | N/A |
 
-These constraints can be provided using the StringConstraints metadata type, or using the Field() function (except for `to_upper` and `to_lower`).
+These constraints can be provided using the StringConstraints metadata type, or using the Field() function (except for `strip_whitespace`, `to_upper`, `to_lower` and `ascii_only`).
 
 The [`annotated-types`](https://github.com/annotated-types/annotated-types) library also provides the `MinLen`, `MaxLen` and `Len` metadata types, as well as the `LowerCase`, `UpperCase`, `IsDigit` and `IsAscii` predicates (must be parameterized with `str`, e.g. `LowerCase[str]`).
 
@@ -258,6 +258,8 @@ print(my_model.model_dump_json())  # (2)!
 
 ### Complex numbers
 
+Added in v2.9.
+
 Built-in type: complex.
 
 #### Validation
@@ -277,6 +279,8 @@ In [Python mode](../../concepts/serialization/#python-mode), complex instances a
 In [JSON mode](../../concepts/serialization/#json-mode), they are serialized as strings.
 
 ### Fractions
+
+Added in v2.10.
 
 Standard library type: fractions.Fraction.
 
@@ -615,24 +619,6 @@ In [strict mode](../../concepts/strict_mode/), only list instances are valid. St
 #### Example
 
 ```python
-from typing import Optional
-
-from pydantic import BaseModel, Field
-
-
-class Model(BaseModel):
-    simple_list: Optional[list[object]] = None
-    list_of_ints: Optional[list[int]] = Field(default=None, strict=True)
-
-
-print(Model(simple_list=('1', '2', '3')).simple_list)
-#> ['1', '2', '3']
-print(Model(list_of_ints=['1', 2, 3]).list_of_ints)
-#> [1, 2, 3]
-
-```
-
-```python
 from pydantic import BaseModel, Field
 
 
@@ -676,24 +662,6 @@ Additionally, the [`prefixItems`](https://json-schema.org/understanding-json-sch
 In [strict mode](../../concepts/strict_mode/), only tuple instances are valid. Strict mode does *not* apply to the items of the tuple. The strict constraint must be applied to the parameter types for this to work.
 
 #### Example
-
-```python
-from typing import Optional
-
-from pydantic import BaseModel
-
-
-class Model(BaseModel):
-    simple_tuple: Optional[tuple] = None
-    tuple_of_different_types: Optional[tuple[int, float, bool]] = None
-
-
-print(Model(simple_tuple=[1, 2, 3, 4]).simple_tuple)
-#> (1, 2, 3, 4)
-print(Model(tuple_of_different_types=[3, 2, 1]).tuple_of_different_types)
-#> (3, 2.0, True)
-
-```
 
 ```python
 from pydantic import BaseModel
@@ -776,24 +744,6 @@ In [Python mode](../../concepts/serialization/#python-mode), sets are serialized
 #### Example
 
 ```python
-from typing import Optional
-
-from pydantic import BaseModel
-
-
-class Model(BaseModel):
-    simple_set: Optional[set] = None
-    set_of_ints: Optional[frozenset[int]] = None
-
-
-print(Model(simple_set=['1', '2', '3']).simple_set)
-#> {'1', '2', '3'}
-print(Model(set_of_ints=['1', '2', '3']).set_of_ints)
-#> frozenset({1, 2, 3})
-
-```
-
-```python
 from pydantic import BaseModel
 
 
@@ -808,6 +758,10 @@ print(Model(set_of_ints=['1', '2', '3']).set_of_ints)
 #> frozenset({1, 2, 3})
 
 ```
+
+#### JSON Schema
+
+Pydantic does best effort to sort default values that are collections.abc.Set instances.
 
 ### Deque
 
@@ -1035,7 +989,7 @@ Standard library type: collections.abc.Iterable (deprecated alias: typing.Iterab
 
 #### Validation
 
-Iterables are lazily validated, and wrapped in an internal datastructure that can be iterated over (and will validated the items type while doing so). This means that even if you provide a concrete container such as a list, the validated type will *not* be of type list. However, Pydantic will ensure that the input value is iterable by getting an iterator from it (by calling iter() on the value).
+Iterables are lazily validated, and wrapped in an internal datastructure that can be iterated over (and will validate the items type while doing so). This means that even if you provide a concrete container such as a list, the validated type will *not* be of type list. However, Pydantic will ensure that the input value is iterable by getting an iterator from it (by calling iter() on the value).
 
 It is recommended to use concrete collection types (such as [lists](#lists)) instead, unless you are using an infinite iterator (in which case eagerly validating the input would result in an infinite loop).
 
@@ -1072,22 +1026,6 @@ Standard library type: collections.abc.Callable (deprecated alias: typing.Callab
 ### Validation
 
 Pydantic only validates that the input is a callable (using the [`callable()`](https://docs.python.org/3/library/functions.html#callable) function). It does *not* validate the number of parameters or their type, nor the type of the return value.
-
-```python
-from typing import Callable
-
-from pydantic import BaseModel
-
-
-class Foo(BaseModel):
-    callback: Callable[[int], int]
-
-
-m = Foo(callback=lambda x: x)
-print(m)
-#> callback=<function <lambda> at 0x0123456789ab>
-
-```
 
 ```python
 from collections.abc import Callable

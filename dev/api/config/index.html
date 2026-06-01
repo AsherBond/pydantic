@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2292,6 +2292,17 @@ to help you monitor and understand your
     <span class="md-ellipsis">
       
         url_preserve_empty_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pydantic.config.ConfigDict.polymorphic_serialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        polymorphic_serialization
       
     </span>
   </a>
@@ -4985,6 +4996,17 @@ to help you monitor and understand your
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pydantic.config.ConfigDict.polymorphic_serialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        polymorphic_serialization
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5241,7 +5263,7 @@ to help you monitor and understand your
   </span>
 
 <a href="#pydantic.config.ConfigDict.model_title_generator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">model_title_generator</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/glossary.html#term-type">type</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">model_title_generator</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/glossary.html#term-type">type</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -5270,7 +5292,7 @@ to help you monitor and understand your
 
 <a href="#pydantic.config.ConfigDict.field_title_generator" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">field_title_generator</span><span class="p">:</span> <span class="p">(</span>
-    <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.fields.FieldInfo" href="../fields/#pydantic.fields.FieldInfo">FieldInfo</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.fields.ComputedFieldInfo" href="../fields/#pydantic.fields.ComputedFieldInfo">ComputedFieldInfo</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span>
+    <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.fields.FieldInfo" href="../fields/#pydantic.fields.FieldInfo">FieldInfo</a></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.fields.ComputedFieldInfo" href="../fields/#pydantic.fields.ComputedFieldInfo">ComputedFieldInfo</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span>
     <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -5678,16 +5700,15 @@ control for validation behavior.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Whether to populate models with the <code>value</code> property of enums, rather than the raw enum.
-This may be useful if you want to serialize <code>model.model_dump()</code> later. Defaults to <code>False</code>.</p>
+        <p>Whether to populate models with the <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/enum.html#enum.Enum.value"><code>value</code></a> property of enums, rather than the raw enum.
+This may be useful if you want to serialize the value later. Defaults to <code>False</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you have an <code>Optional[Enum]</code> value that you set a default for, you need to use <code>validate_default=True</code>
-for said Field to ensure that the <code>use_enum_values</code> flag takes effect on the default, as extracting an
+<p>If you have a field typed as an enum with a default value, the <a class="autorefs autorefs-internal" href="#pydantic.config.ConfigDict.validate_default"><code>validate_default</code></a>
+configuration needs to be set to ensure that the <code>use_enum_values</code> flag takes effect on the default, as extracting an
 enum's value occurs during validation, not serialization.</p>
 </div>
 <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">Field</span>
 
@@ -5700,7 +5721,7 @@ enum's value occurs during validation, not serialization.</p>
     <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">use_enum_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">some_enum</span><span class="p">:</span> <span class="n">SomeEnum</span>
-    <span class="n">another_enum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomeEnum</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">another_enum</span><span class="p">:</span> <span class="n">SomeEnum</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SomeEnum</span><span class="o">.</span><span class="n">FOO</span><span class="p">,</span> <span class="n">validate_default</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
@@ -5937,7 +5958,7 @@ enum's value occurs during validation, not serialization.</p>
 
 <a href="#pydantic.config.ConfigDict.alias_generator" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">alias_generator</span><span class="p">:</span> <span class="p">(</span>
-    <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.aliases.AliasGenerator" href="../aliases/#pydantic.aliases.AliasGenerator">AliasGenerator</a></span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">],</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">]</span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.aliases.AliasGenerator" href="../aliases/#pydantic.aliases.AliasGenerator">AliasGenerator</a></span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -6441,7 +6462,10 @@ Set equal to <code>val_json_bytes</code> to get back an equal value after serial
 
     <div class="doc doc-contents ">
 
-        <p>The encoding of JSON serialized bytes to decode. Defaults to <code>'utf8'</code>.
+        <div style="border-left: .15rem solid rgb(79, 196, 100); padding: 0 .5rem;">
+<p><span style="font-style: italic; color: rgb(79, 196, 100);">Added in v2.9.</span></p>
+</div>
+<p>The encoding of JSON serialized bytes to decode. Defaults to <code>'utf8'</code>.
 Set equal to <code>ser_json_bytes</code> to get back an equal value after serialization round trip.</p>
 <ul>
 <li><code>'utf8'</code> will deserialize UTF-8 strings to bytes.</li>
@@ -7425,6 +7449,34 @@ for consistency with alias behavior for validation and serialization.</span></p>
 
 
 
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="pydantic.config.ConfigDict.polymorphic_serialization" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">polymorphic_serialization</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#pydantic.config.ConfigDict.polymorphic_serialization" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="n">polymorphic_serialization</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Whether to use polymorphic serialization for subclasses of the model or Pydantic dataclass. Defaults to <code>False</code>.</p>
+    </div>
+
+</div>
+
+
+
+
   </div>
 
     </div>
@@ -7447,17 +7499,17 @@ for consistency with alias behavior for validation and serialization.</span></p>
           <div class="doc-overloads">
 <div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">with_config</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.config.ConfigDict" href="#pydantic.config.ConfigDict">ConfigDict</a></span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
 </code></pre></div><div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">with_config</span><span class="p">(</span>
     <span class="n">config</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.config.ConfigDict" href="#pydantic.config.ConfigDict">ConfigDict</a></span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
 </code></pre></div><div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">with_config</span><span class="p">(</span>
     <span class="o">**</span><span class="n">config</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing_extensions.Unpack" href="https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.Unpack">Unpack</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-internal" title="pydantic.config.ConfigDict" href="#pydantic.config.ConfigDict">ConfigDict</a></span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
 </code></pre></div>          </div>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">with_config</span><span class="p">(</span>
     <span class="n">config</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-internal" title="pydantic.config.ConfigDict" href="#pydantic.config.ConfigDict">ConfigDict</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a></span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="typing.Callable" href="https://docs.python.org/3/library/typing.html#typing.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" title="collections.abc.Callable" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable">Callable</a></span><span class="p">[[</span><span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">],</span> <span class="n"><span title="pydantic.config._TypeT">_TypeT</span></span><span class="p">]</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -7494,12 +7546,7 @@ especially with <code>TypedDict</code>.</p>
 
             <details class="quote">
               <summary>Source code in <code>pydantic/config.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1224</span>
-<span class="normal">1225</span>
-<span class="normal">1226</span>
-<span class="normal">1227</span>
-<span class="normal">1228</span>
-<span class="normal">1229</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1229</span>
 <span class="normal">1230</span>
 <span class="normal">1231</span>
 <span class="normal">1232</span>
@@ -7555,7 +7602,12 @@ especially with <code>TypedDict</code>.</p>
 <span class="normal">1282</span>
 <span class="normal">1283</span>
 <span class="normal">1284</span>
-<span class="normal">1285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">with_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">ConfigDict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_TypeT</span><span class="p">],</span> <span class="n">_TypeT</span><span class="p">]:</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span>
+<span class="normal">1287</span>
+<span class="normal">1288</span>
+<span class="normal">1289</span>
+<span class="normal">1290</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">with_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">ConfigDict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">_TypeT</span><span class="p">],</span> <span class="n">_TypeT</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;!!! abstract &quot;Usage Documentation&quot;</span>
 <span class="sd">        [Configuration with other types](../concepts/config.md#configuration-on-other-supported-types)</span>
 
@@ -8085,7 +8137,7 @@ especially with <code>TypedDict</code>.</p>
                 
   <script src="/flarelytics/client.js"></script>
       <script>
-    window.mkdocs_run_deps = ["https://docs.pydantic.dev/dev/pydantic-2.13.0a0+dev-py3-none-any.whl", "email-validator>=2.0.0", "pydantic-core==2.41.5", "pydantic-extra-types==2.10.6"]
+    window.mkdocs_run_deps = ["pydantic==2.14.0a1", "email-validator>=2.0.0", "pydantic-core==2.47.0", "pydantic-extra-types==2.10.6"]
     </script>
 
               </article>
@@ -8134,10 +8186,10 @@ especially with <code>TypedDict</code>.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.tabs.link", "content.code.annotate", "content.code.copy", "announce.dismiss", "navigation.tabs", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.preview", "navigation.instant.progress", "navigation.path", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.tabs.link", "content.code.annotate", "content.code.copy", "announce.dismiss", "navigation.tabs", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.preview", "navigation.instant.progress", "navigation.path", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/algoliasearch@5.20.0/dist/lite/builds/browser.umd.js"></script>
       

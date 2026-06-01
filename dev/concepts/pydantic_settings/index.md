@@ -94,13 +94,13 @@ print(Settings().model_dump())
 
    Check the [`Field` documentation](../fields/#field-aliases) for more information.
 
-1. The AliasChoices class allows to have multiple environment variable names for a single field. The first environment variable that is found will be used.
+1. The AliasChoices class allows you to have multiple environment variable names for a single field. The first environment variable that is found will be used.
 
    Check the [documentation on alias choices](../alias/#aliaspath-and-aliaschoices) for more information.
 
-1. The ImportString class allows to import an object from a string. In this case, the environment variable `special_function` will be read and the function math.cos will be imported.
+1. The ImportString class allows you to import an object from a string. In this case, the environment variable `special_function` will be read and the function math.cos will be imported.
 
-1. The `env_prefix` config setting allows to set a prefix for all environment variables.
+1. The `env_prefix` config setting allows you to set a prefix for all environment variables.
 
    Check the [Environment variable names documentation](#environment-variable-names) for more information.
 
@@ -308,6 +308,10 @@ Another way to populate nested complex variables is to configure your model with
 Note
 
 Sub model has to inherit from `pydantic.BaseModel`, Otherwise `pydantic-settings` will initialize sub model, collects values for sub model fields separately, and you may get unexpected results.
+
+Note
+
+The `env_nested_delimiter` option applies only to variables that point to declared fields. If a variable points to an unknown field no conversion will take place.
 
 As an example, given the following environment variables:
 
@@ -649,6 +653,10 @@ Note
 
 If a filename is specified for `env_file`, Pydantic will only check the current working directory and won't check any parent directories for the `.env` file.
 
+Tip
+
+Named pipes (FIFOs) are also supported as dotenv files. This is useful for tools like [1Password Environments](https://developer.1password.com/docs/environments), which mount `.env` files as named pipes to provide secrets on demand without writing them to disk.
+
 Even when using a dotenv file, *pydantic* will still read environment variables as well as the dotenv file, **environment variables will always take priority over values loaded from a dotenv file**.
 
 Passing a file path via the `_env_file` keyword argument on instantiation (method 2) will override the value (if any) set on the `model_config` class. If the above snippets were used in conjunction, `prod.env` would be loaded while `.env` would be ignored.
@@ -673,6 +681,11 @@ Because python-dotenv is used to parse the file, bash-like semantics such as `ex
 
 Pydantic settings consider `extra` config in case of dotenv file. It means if you set the `extra=forbid` (*default*) on `model_config` and your dotenv file contains an entry for a field that is not defined in settings model, it will raise `ValidationError` in settings construction.
 
+This behaviour can be customized by using the setting `dotenv_filtering` that supports two additional alternative modes:
+
+- `'match_prefix'`: only the variables that match the prefix will be passed to the model. Useful when used in conjunction with `env_prefix` to "scope" a single dotenv file to a specific model.
+- `'only_existing'`: only the variables that have a corresponding field will be passed to the model. When using this option the dotenv setting source will behave like the env settings source.
+
 For compatibility with pydantic 1.x BaseSettings you should use `extra=ignore`:
 
 ```py
@@ -686,7 +699,7 @@ class Settings(BaseSettings):
 
 Note
 
-Pydantic settings loads all the values from dotenv file and passes it to the model, regardless of the model's `env_prefix`. So if you provide extra values in a dotenv file, whether they start with `env_prefix` or not, a `ValidationError` will be raised.
+Pydantic settings loads all the values from dotenv file and passes it to the model, regardless of the model's `env_prefix`, unless `dotenv_filtering` is used. So if you provide extra values in a dotenv file, whether they start with `env_prefix` or not, a `ValidationError` will be raised.
 
 ## Command Line Support
 
@@ -1125,7 +1138,7 @@ For `BaseModel` and `pydantic.dataclasses.dataclass` types, `CliApp.run` will in
 - `cli_implicit_flags=True`
 - `cli_kebab_case=True`
 
-### Asynchronous CLI Commands
+#### Asynchronous Commands
 
 Pydantic settings supports running asynchronous CLI commands via `CliApp.run` and `CliApp.run_subcommand`. With this feature, you can define async def methods within your Pydantic models (including subcommands) and have them executed just like their synchronous counterparts. Specifically:
 
@@ -1193,27 +1206,83 @@ CliApp.run(Git, cli_args=['clone', 'repo', 'dir']).model_dump() == {
 
 When executing a subcommand with an asynchronous cli_cmd, Pydantic settings automatically detects whether the current thread already has an active event loop. If so, the async command is run in a fresh thread to avoid conflicts. Otherwise, it uses asyncio.run() in the current thread. This handling ensures your asynchronous subcommands "just work" without additional manual setup.
 
-### Serializing CLI Arguments
+#### Printing Help
 
-An instantiated Pydantic model can be serialized into its CLI arguments using the `CliApp.serialize` method.
+The `print_help` and `format_help` methods are available for printing or formatting help.
+
+```python
+from pydantic_settings import BaseSettings, CliApp
+
+
+class Settings(BaseSettings, cli_prog_name='example'):
+
+    def cli_cmd(self) -> None:
+        # Will print help for the current command or subcommand instance.
+        CliApp.print_help(self)
+
+        # Will return formatted help for the current command or subcommand instance.
+        CliApp.format_help(self)
+
+
+CliApp.run(Settings, cli_args=[])
+"""
+usage: example [-h]
+
+options:
+  -h, --help  show this help message and exit
+"""
+
+# You can also print or format help on the class itself.
+print(CliApp.format_help(Settings))
+"""
+usage: example [-h]
+
+options:
+  -h, --help  show this help message and exit
+"""
+
+```
+
+#### Serializing Arguments
+
+An instantiated Pydantic model can be serialized into its CLI arguments using the `CliApp.serialize` method. Serialization styles can be controlled using the `list_style`, `dict_style`, and `positionals_first` flags.
 
 ```py
 from pydantic import BaseModel
 
-from pydantic_settings import CliApp
+from pydantic_settings import CliApp, CliPositionalArg
 
 
 class Nested(BaseModel):
-    that: int
+    that: dict[str, int]
 
 
 class Settings(BaseModel):
-    this: str
+    positional_arg: CliPositionalArg[str]
+    this: list[str]
     nested: Nested
 
 
-print(CliApp.serialize(Settings(this='hello', nested=Nested(that=123))))
-#> ['--this', 'hello', '--nested.that', '123']
+settings = Settings(
+    positional_arg='arg', this=['hello', 'world'], nested=Nested(that={'a': 1, 'b': 2})
+)
+
+print(CliApp.serialize(settings))
+#> ['--this', '["hello", "world"]', '--nested.that', '{"a": 1, "b": 2}', 'arg']
+
+print(CliApp.serialize(settings, positionals_first=True))
+#> ['arg', '--this', '["hello", "world"]', '--nested.that', '{"a": 1, "b": 2}']
+
+print(CliApp.serialize(settings, list_style='lazy'))
+#> ['--this', 'hello,world', '--nested.that', '{"a": 1, "b": 2}', 'arg']
+
+print(CliApp.serialize(settings, list_style='argparse'))
+#> ['--this', 'hello', '--this', 'world', '--nested.that', '{"a": 1, "b": 2}', 'arg']
+
+print(CliApp.serialize(settings, dict_style='env'))
+"""
+['--this', '["hello", "world"]', '--nested.that', 'a=1', '--nested.that', 'b=2', 'arg']
+"""
 
 ```
 
@@ -1844,6 +1913,7 @@ A `CliSettingsSource` connects with a `root_parser` object by using parser metho
 - `add_argument_group_method` - (`argparse.ArgumentParser.add_argument_group`)
 - `add_parser_method` - (`argparse._SubParsersAction.add_parser`)
 - `add_subparsers_method` - (`argparse.ArgumentParser.add_subparsers`)
+- `format_help_method` - (`argparse.ArgumentParser.format_help`)
 - `formatter_class` - (`argparse.RawDescriptionHelpFormatter`)
 
 For a non-argparse parser the parser methods can be set to `None` if not supported. The CLI settings will only raise an error when connecting to the root parser if a parser method is necessary but set to `None`.
@@ -2165,7 +2235,7 @@ Same as `case_sensitive`, but works for secrets only. If not specified, defaults
 
 #### secrets_nested_delimiter
 
-Same as `env_nested_delimiter`, but works for secrets only. If not specified, defaults to `env_nested_delimiter`. This option is used to implement *nested secrets directory* layout and allows to do even nasty things like `/run/secrets/model/delim/nested1/delim/nested2`.
+Same as `env_nested_delimiter`, but works for secrets only. If not specified, defaults to `env_nested_delimiter`. This option is used to implement *nested secrets directory* layout and allows you to do even nasty things like `/run/secrets/model/delim/nested1/delim/nested2`.
 
 #### secrets_nested_subdir
 
@@ -2292,7 +2362,7 @@ class AzureKeyVaultSettings(BaseSettings):
 
 ### Snake case conversion
 
-The Azure Key Vault source accepts a `snake_case_convertion` option, disabled by default, to convert Key Vault secret names by mapping them to Python's snake_case field names, without the need to use aliases.
+The Azure Key Vault source accepts a `snake_case_conversion` option, disabled by default, to convert Key Vault secret names by mapping them to Python's snake_case field names, without the need to use aliases.
 
 ```py
 import os
@@ -2334,7 +2404,7 @@ This setup will load Azure Key Vault secrets (e.g., `MySetting`, `mySetting`, `m
 
 The Azure Key Vault source accepts a `dash_to_underscore` option, disabled by default, to support Key Vault kebab-case secret names by mapping them to Python's snake_case field names. When enabled, dashes (`-`) in secret names are mapped to underscores (`_`) in field names during validation.
 
-This mapping applies only to *field names*, not to aliases.
+This mapping applies only to *field names*, not to aliases. Consider snake case conversion if you need aliases or nested fields.
 
 ```py
 import os
@@ -2463,14 +2533,59 @@ The `GoogleSecretManagerSettingsSource` supports several authentication methods:
 
 For nested models, Secret Manager supports the `env_nested_delimiter` setting as long as it complies with the [naming rules](https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets#create-a-secret). In the example above, you would create secrets named `database__password` and `database__user` in Secret Manager.
 
+### Secret Versions
+
+By default, `GoogleSecretManagerSettingsSource` uses the "latest" version of secrets. You can specify a different version using the `SecretVersion` annotation.
+
+```py
+from typing import Annotated
+
+from pydantic import Field
+
+from pydantic_settings import (
+    BaseSettings,
+    GoogleSecretManagerSettingsSource,
+    PydanticBaseSettingsSource,
+)
+from pydantic_settings.sources.types import SecretVersion
+
+
+class Settings(BaseSettings):
+    # This will use the "latest" version
+    my_secret: str = Field(alias='my-secret')
+    # This will use version "1"
+    my_secret_v1: Annotated[str, Field(alias='my-secret'), SecretVersion('1')]
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        return (
+            GoogleSecretManagerSettingsSource(settings_cls, project_id='my-project'),
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+        )
+
+```
+
+Note
+
+If you have multiple fields pointing to the same secret (alias) but with different versions, you MUST enable `populate_by_name=True` in `SettingsConfigDict`.
+
 ### Important Notes
 
 1. **Case Sensitivity**: By default, secret names are case-sensitive.
    - If you set `case_sensitive=False`, `pydantic-settings` will attempt to resolve secrets in a case-insensitive manner. It prioritizes exact matches over case-insensitive matches. For some examples of this, imagine `case_sensitive=False` and the model attribute is named `my_secret`:
      - If Google Secret Manager has both `MY_SECRET` and `my_secret` defined - the value of `my_secret` will be returned.
      - If Google Secret Manager has `MY_SECRET`, `My_Secret`, and `my_Secret` defined - a warning will be raised and the value of `my_Secret` will be returned - as the secret names are first sorted in ASCII sort order (where lowercased letters are greater than upper case letters) and the last one is chosen (which would be `my_Secret` in this case).
-1. **Secret Naming**: Create secrets in Google Secret Manager with names that match your field names (including any prefix). According the [Secret Manager documentation](https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets#create-a-secret), a secret name can contain uppercase and lowercase letters, numerals, hyphens, and underscores. The maximum allowed length for a name is 255 characters.
-1. **Secret Versions**: The GoogleSecretManagerSettingsSource uses the "latest" version of secrets.
+1. **Secret Naming**: Create secrets in Google Secret Manager with names that match your field names (including any prefix). According to the [Secret Manager documentation](https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets#create-a-secret), a secret name can contain uppercase and lowercase letters, numerals, hyphens, and underscores. The maximum allowed length for a name is 255 characters.
 
 For more details on creating and managing secrets in Google Cloud Secret Manager, see the [official Google Cloud documentation](https://cloud.google.com/secret-manager/docs).
 
