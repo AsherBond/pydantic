@@ -121,7 +121,7 @@ What's new &mdash; we've launched
 <a href="https://pydantic.dev/articles/logfire-announcement">Pydantic Logfire</a>
 <img alt="🔥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f525.svg" title=":fire:">
 to help you monitor and understand your
-<a href="https://logfire.pydantic.dev/docs/integrations/pydantic/" id="logfire-app-type" target="_blank">Pydantic validations.</a>
+<a href="https://pydantic.dev/docs/logfire/integrations/pydantic/" id="logfire-app-type" target="_blank">Pydantic validations.</a>
 
           </div>
           
@@ -3418,6 +3418,34 @@ to help you monitor and understand your
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting with Logfire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4366,11 +4394,11 @@ git<span class="w"> </span>clone<span class="w"> </span>git@github.com:&lt;your<
 <span class="nb">cd</span><span class="w"> </span>pydantic
 
 <span class="c1"># Install UV and pre-commit</span>
-<span class="c1"># We use pipx here, for other options see:</span>
+<span class="c1"># We use uv here, for other options see:</span>
 <span class="c1"># https://docs.astral.sh/uv/getting-started/installation/</span>
 <span class="c1"># https://pre-commit.com/#install</span>
 curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
-uvx<span class="w"> </span>install<span class="w"> </span>pre-commit
+uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>pre-commit
 
 <span class="c1"># Install pydantic, dependencies, test dependencies and doc dependencies</span>
 make<span class="w"> </span>install
@@ -4385,7 +4413,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <p>Run tests and linting locally to make sure everything is working as expected.</p>
 <div class="language-bash highlight"><pre><span></span><code><span class="c1"># Run automated code formatting and linting</span>
 make<span class="w"> </span>format
-<span class="c1"># Pydantic uses ruff, an awesome Python linter written in rust</span>
+<span class="c1"># Pydantic uses ruff, an awesome Python linter written in Rust</span>
 <span class="c1"># https://github.com/astral-sh/ruff</span>
 
 <span class="c1"># Run tests and linting</span>
@@ -4434,8 +4462,8 @@ For example, if the latest release is <code>v2.9.2</code>, you should make sure 
 <li>Module-level variables</li>
 </ul>
 <p>Pydantic uses <a href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings">Google-style docstrings</a> formatted according to <a href="https://www.python.org/dev/peps/pep-0257/">PEP 257</a> guidelines. (See <a href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">Example Google Style Python Docstrings</a> for further examples.)</p>
-<p><a href="https://www.pydocstyle.org/en/stable/index.html">pydocstyle</a> is used for linting docstrings. You can run <code>make format</code> to check your docstrings.</p>
-<p>Where this is a conflict between Google-style docstrings and pydocstyle linting, follow the pydocstyle linting hints.</p>
+<p>Ruff lints docstrings automatically. You can run <code>make format</code> to auto-fix any docstring issues.</p>
+<p>Where there is a conflict between Google-style docstrings and Ruff linting, follow the Ruff linting hints.</p>
 <p>Class attributes and function arguments should be documented in the format "name: description." When applicable, a return type should be documented with just a description. Types are inferred from the signature.</p>
 <div class="language-python highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class docstring.</span>
