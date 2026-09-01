@@ -680,15 +680,15 @@ The following table provides details on how Pydantic converts data during valida
 
 The "Strict" column contains checkmarks for type conversions that are allowed when validating in [Strict Mode](../strict_mode/).
 
-| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bool` | `Decimal` | | Python | Allowed values: `Decimal(0), Decimal(1)`. | | `bytes` | `bytearray` | | Python | | | `bytes` | `bytes` | ✓ | Python | | | `bytes` | `str` | ✓ | JSON | | | `bytes` | `str` | | Python | | | `callable` | `-` | | JSON | Never valid. | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `bytes` | | Python | Format: `YYYY-MM-DD` (UTF-8). | | `date` | `date` | ✓ | Python | | | `date` | `datetime` | | Python | Must be exact date, eg. no `H`, `M`, `S`, `f`. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `date` | `Decimal` | | Python | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `datetime` | `bytes` | | Python | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `datetime` | `date` | | Python | | | `datetime` | `datetime` | ✓ | Python | | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `Decimal` | | Python | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `deque` | ✓ | Python | | | `deque` | `frozenset` | | Python | | | `deque` | `list` | | Python | | | `deque` | `set` | | Python | | | `deque` | `tuple` | | Python | | | `deque` | `Array` | ✓ | JSON | | | `dict` | `dict` | ✓ | Python | | | `dict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `dict` | `Object` | ✓ | JSON | | | `float` | `bool` | | Python & JSON | | | `float` | `bytes` | | Python | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `Decimal` | | Python | | | `frozenset` | `deque` | | Python | | | `frozenset` | `dict_keys` | | Python | | | `frozenset` | `dict_values` | | Python | | | `frozenset` | `frozenset` | ✓ | Python | | | `frozenset` | `list` | | Python | | | `frozenset` | `set` | | Python | | | `frozenset` | `tuple` | | Python | | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `bool` | | Python & JSON | | | `int` | `bytes` | | Python | Must be numeric only, e.g. `[0-9]+`. | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `int` | `Decimal` | | Python | Must be exact int, e.g. `val % 1 == 0`. | | `list` | `deque` | | Python | | | `list` | `dict_keys` | | Python | | | `list` | `dict_values` | | Python | | | `list` | `frozenset` | | Python | | | `list` | `list` | ✓ | Python | | | `list` | `set` | | Python | | | `list` | `tuple` | | Python | | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `deque` | | Python | | | `set` | `dict_keys` | | Python | | | `set` | `dict_values` | | Python | | | `set` | `frozenset` | | Python | | | `set` | `list` | | Python | | | `set` | `set` | ✓ | Python | | | `set` | `tuple` | | Python | | | `set` | `Array` | ✓ | JSON | | | `str` | `bytearray` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `bytes` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `str` | ✓ | Python & JSON | | | `time` | `bytes` | | Python | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `time` | ✓ | Python | | | `time` | `Decimal` | | Python | Interpreted as seconds, range `0 - 86399.9*`. | | `timedelta` | `bytes` | | Python | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `timedelta` | ✓ | Python | | | `timedelta` | `Decimal` | | Python | Interpreted as seconds. | | `tuple` | `deque` | | Python | | | `tuple` | `dict_keys` | | Python | | | `tuple` | `dict_values` | | Python | | | `tuple` | `frozenset` | | Python | | | `tuple` | `list` | | Python | | | `tuple` | `set` | | Python | | | `tuple` | `tuple` | ✓ | Python | | | `tuple` | `Array` | ✓ | JSON | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Enum` | `Any` | | Python | Input value must be convertible to enum values. | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `bytes` | | Python | | | `IPv4Address` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `bytes` | | Python | | | `IPv4Interface` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Interface` | `tuple` | | Python | | | `IPv4Interface` | `IPv4Address` | | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `bytes` | | Python | | | `IPv4Network` | `int` | | Python | integer representing the IP network, must be less than `2**32` | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | | Python & JSON | | | `IPv4Network` | `IPv4Address` | | Python | | | `IPv4Network` | `IPv4Interface` | | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `bytes` | | Python | | | `IPv6Address` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `bytes` | | Python | | | `IPv6Interface` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Interface` | `tuple` | | Python | | | `IPv6Interface` | `IPv6Address` | | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `bytes` | | Python | | | `IPv6Network` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Network` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | | Python & JSON | | | `IPv6Network` | `IPv6Address` | | Python | | | `IPv6Network` | `IPv6Interface` | | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `-` | | JSON | Never valid. | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IntEnum` | `Any` | | Python | Input value must be convertible to enum values. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Path` | `str` | | Python | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `deque` | | Python | | | `Sequence` | `list` | ✓ | Python | | | `Sequence` | `tuple` | | Python | | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `TypedDict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | | | `UUID` | `str` | | Python | | | `UUID` | `UUID` | ✓ | Python | |
+| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bool` | `Decimal` | | Python | Allowed values: `Decimal(0), Decimal(1)`. | | `bytes` | `bytearray` | | Python | | | `bytes` | `bytes` | ✓ | Python | | | `bytes` | `str` | ✓ | JSON | | | `bytes` | `str` | | Python | | | `callable` | `-` | | JSON | Never valid. | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `bytes` | | Python | Format: `YYYY-MM-DD` (UTF-8). | | `date` | `date` | ✓ | Python | | | `date` | `datetime` | | Python | Must be exact date, eg. no `H`, `M`, `S`, `f`. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `date` | `Decimal` | | Python | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `datetime` | `bytes` | | Python | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `datetime` | `date` | | Python | | | `datetime` | `datetime` | ✓ | Python | | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `Decimal` | | Python | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `deque` | ✓ | Python | | | `deque` | `frozenset` | | Python | | | `deque` | `list` | | Python | | | `deque` | `set` | | Python | | | `deque` | `tuple` | | Python | | | `deque` | `Array` | ✓ | JSON | | | `dict` | `dict` | ✓ | Python | | | `dict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `dict` | `Object` | ✓ | JSON | | | `float` | `bool` | | Python & JSON | | | `float` | `bytes` | | Python | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `Decimal` | | Python | | | `frozendict` | `dict` | | Python | `frozendict` is only available in Python 3.15 and above. | | `frozendict` | `frozendict` | ✓ | Python | `frozendict` is only available in Python 3.15 and above. | | `frozendict` | `Mapping` | | Python | `frozendict` is only available in Python 3.15 and above. The input must implement the mapping interface and have an `items()` method. | | `frozendict` | `Object` | ✓ | JSON | `frozendict` is only available in Python 3.15 and above. | | `frozenset` | `deque` | | Python | | | `frozenset` | `dict_keys` | | Python | | | `frozenset` | `dict_values` | | Python | | | `frozenset` | `frozenset` | ✓ | Python | | | `frozenset` | `list` | | Python | | | `frozenset` | `set` | | Python | | | `frozenset` | `tuple` | | Python | | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `bool` | | Python & JSON | | | `int` | `bytes` | | Python | Must be numeric only, e.g. `[0-9]+`. | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `int` | `Decimal` | | Python | Must be exact int, e.g. `val % 1 == 0`. | | `list` | `deque` | | Python | | | `list` | `dict_keys` | | Python | | | `list` | `dict_values` | | Python | | | `list` | `frozenset` | | Python | | | `list` | `list` | ✓ | Python | | | `list` | `set` | | Python | | | `list` | `tuple` | | Python | | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `deque` | | Python | | | `set` | `dict_keys` | | Python | | | `set` | `dict_values` | | Python | | | `set` | `frozenset` | | Python | | | `set` | `list` | | Python | | | `set` | `set` | ✓ | Python | | | `set` | `tuple` | | Python | | | `set` | `Array` | ✓ | JSON | | | `str` | `bytearray` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `bytes` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `str` | ✓ | Python & JSON | | | `time` | `bytes` | | Python | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `time` | ✓ | Python | | | `time` | `Decimal` | | Python | Interpreted as seconds, range `0 - 86399.9*`. | | `timedelta` | `bytes` | | Python | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `timedelta` | ✓ | Python | | | `timedelta` | `Decimal` | | Python | Interpreted as seconds. | | `tuple` | `deque` | | Python | | | `tuple` | `dict_keys` | | Python | | | `tuple` | `dict_values` | | Python | | | `tuple` | `frozenset` | | Python | | | `tuple` | `list` | | Python | | | `tuple` | `set` | | Python | | | `tuple` | `tuple` | ✓ | Python | | | `tuple` | `Array` | ✓ | JSON | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Enum` | `Any` | | Python | Input value must be convertible to enum values. | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `bytes` | | Python | | | `IPv4Address` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `bytes` | | Python | | | `IPv4Interface` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Interface` | `tuple` | | Python | | | `IPv4Interface` | `IPv4Address` | | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `bytes` | | Python | | | `IPv4Network` | `int` | | Python | integer representing the IP network, must be less than `2**32` | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | | Python & JSON | | | `IPv4Network` | `IPv4Address` | | Python | | | `IPv4Network` | `IPv4Interface` | | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `bytes` | | Python | | | `IPv6Address` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `bytes` | | Python | | | `IPv6Interface` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Interface` | `tuple` | | Python | | | `IPv6Interface` | `IPv6Address` | | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `bytes` | | Python | | | `IPv6Network` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Network` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | | Python & JSON | | | `IPv6Network` | `IPv6Address` | | Python | | | `IPv6Network` | `IPv6Interface` | | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `-` | | JSON | Never valid. | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IntEnum` | `Any` | | Python | Input value must be convertible to enum values. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Path` | `str` | | Python | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `deque` | | Python | | | `Sequence` | `list` | ✓ | Python | | | `Sequence` | `tuple` | | Python | | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `TypedDict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | | | `UUID` | `str` | | Python | | | `UUID` | `UUID` | ✓ | Python | |
 
-| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bytes` | `str` | ✓ | JSON | | | `callable` | `-` | | JSON | Never valid. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `Array` | ✓ | JSON | | | `dict` | `Object` | ✓ | JSON | | | `float` | `bool` | | Python & JSON | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `bool` | | Python & JSON | | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `Array` | ✓ | JSON | | | `str` | `str` | ✓ | Python & JSON | | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `tuple` | `Array` | ✓ | JSON | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | | Python & JSON | | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Network` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | | Python & JSON | | | `InstanceOf` | `-` | | JSON | Never valid. | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | |
+| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bytes` | `str` | ✓ | JSON | | | `callable` | `-` | | JSON | Never valid. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `Array` | ✓ | JSON | | | `dict` | `Object` | ✓ | JSON | | | `float` | `bool` | | Python & JSON | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `frozendict` | `Object` | ✓ | JSON | `frozendict` is only available in Python 3.15 and above. | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `bool` | | Python & JSON | | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `Array` | ✓ | JSON | | | `str` | `str` | ✓ | Python & JSON | | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `tuple` | `Array` | ✓ | JSON | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | | Python & JSON | | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Network` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | | Python & JSON | | | `InstanceOf` | `-` | | JSON | Never valid. | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | |
 
-| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bytes` | `str` | ✓ | JSON | | | `deque` | `Array` | ✓ | JSON | | | `dict` | `Object` | ✓ | JSON | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `Array` | ✓ | JSON | | | `str` | `str` | ✓ | Python & JSON | | | `tuple` | `Array` | ✓ | JSON | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | ✓ | JSON | | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | |
+| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bytes` | `str` | ✓ | JSON | | | `deque` | `Array` | ✓ | JSON | | | `dict` | `Object` | ✓ | JSON | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `frozendict` | `Object` | ✓ | JSON | `frozendict` is only available in Python 3.15 and above. | | `frozenset` | `Array` | ✓ | JSON | | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `list` | `Array` | ✓ | JSON | | | `namedtuple` | `Array` | ✓ | JSON | | | `namedtuple` | `Object` | ✓ | JSON | | | `set` | `Array` | ✓ | JSON | | | `str` | `str` | ✓ | Python & JSON | | | `tuple` | `Array` | ✓ | JSON | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `Decimal` | `float` | ✓ | JSON | | | `Decimal` | `int` | ✓ | JSON | | | `Decimal` | `str` | ✓ | JSON | | | `Enum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `IPv4Address` | `str` | ✓ | JSON | | | `IPv4Interface` | `str` | ✓ | JSON | | | `IPv4Network` | `str` | ✓ | JSON | | | `IPv6Address` | `str` | ✓ | JSON | | | `IPv6Interface` | `str` | ✓ | JSON | | | `IPv6Network` | `str` | ✓ | JSON | | | `IntEnum` | `Any` | ✓ | JSON | Input value must be convertible to enum values. | | `Iterable` | `Array` | ✓ | JSON | | | `NamedTuple` | `Array` | ✓ | JSON | | | `NamedTuple` | `Object` | ✓ | JSON | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | ✓ | JSON | | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `Array` | ✓ | JSON | | | `TypedDict` | `Object` | ✓ | JSON | | | `UUID` | `str` | ✓ | JSON | |
 
-| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bool` | `Decimal` | | Python | Allowed values: `Decimal(0), Decimal(1)`. | | `bytes` | `bytearray` | | Python | | | `bytes` | `bytes` | ✓ | Python | | | `bytes` | `str` | | Python | | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `bytes` | | Python | Format: `YYYY-MM-DD` (UTF-8). | | `date` | `date` | ✓ | Python | | | `date` | `datetime` | | Python | Must be exact date, eg. no `H`, `M`, `S`, `f`. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `date` | `Decimal` | | Python | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `datetime` | `bytes` | | Python | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `datetime` | `date` | | Python | | | `datetime` | `datetime` | ✓ | Python | | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `Decimal` | | Python | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `deque` | ✓ | Python | | | `deque` | `frozenset` | | Python | | | `deque` | `list` | | Python | | | `deque` | `set` | | Python | | | `deque` | `tuple` | | Python | | | `dict` | `dict` | ✓ | Python | | | `dict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `float` | `bool` | | Python & JSON | | | `float` | `bytes` | | Python | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `Decimal` | | Python | | | `frozenset` | `deque` | | Python | | | `frozenset` | `dict_keys` | | Python | | | `frozenset` | `dict_values` | | Python | | | `frozenset` | `frozenset` | ✓ | Python | | | `frozenset` | `list` | | Python | | | `frozenset` | `set` | | Python | | | `frozenset` | `tuple` | | Python | | | `int` | `bool` | | Python & JSON | | | `int` | `bytes` | | Python | Must be numeric only, e.g. `[0-9]+`. | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `int` | `Decimal` | | Python | Must be exact int, e.g. `val % 1 == 0`. | | `list` | `deque` | | Python | | | `list` | `dict_keys` | | Python | | | `list` | `dict_values` | | Python | | | `list` | `frozenset` | | Python | | | `list` | `list` | ✓ | Python | | | `list` | `set` | | Python | | | `list` | `tuple` | | Python | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `set` | `deque` | | Python | | | `set` | `dict_keys` | | Python | | | `set` | `dict_values` | | Python | | | `set` | `frozenset` | | Python | | | `set` | `list` | | Python | | | `set` | `set` | ✓ | Python | | | `set` | `tuple` | | Python | | | `str` | `bytearray` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `bytes` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `str` | ✓ | Python & JSON | | | `time` | `bytes` | | Python | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `time` | ✓ | Python | | | `time` | `Decimal` | | Python | Interpreted as seconds, range `0 - 86399.9*`. | | `timedelta` | `bytes` | | Python | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `timedelta` | ✓ | Python | | | `timedelta` | `Decimal` | | Python | Interpreted as seconds. | | `tuple` | `deque` | | Python | | | `tuple` | `dict_keys` | | Python | | | `tuple` | `dict_values` | | Python | | | `tuple` | `frozenset` | | Python | | | `tuple` | `list` | | Python | | | `tuple` | `set` | | Python | | | `tuple` | `tuple` | ✓ | Python | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Any` | | Python | Input value must be convertible to enum values. | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `bytes` | | Python | | | `IPv4Address` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `bytes` | | Python | | | `IPv4Interface` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Interface` | `tuple` | | Python | | | `IPv4Interface` | `IPv4Address` | | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `bytes` | | Python | | | `IPv4Network` | `int` | | Python | integer representing the IP network, must be less than `2**32` | | `IPv4Network` | `str` | | Python & JSON | | | `IPv4Network` | `IPv4Address` | | Python | | | `IPv4Network` | `IPv4Interface` | | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `bytes` | | Python | | | `IPv6Address` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `bytes` | | Python | | | `IPv6Interface` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Interface` | `tuple` | | Python | | | `IPv6Interface` | `IPv6Address` | | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `bytes` | | Python | | | `IPv6Network` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Network` | `str` | | Python & JSON | | | `IPv6Network` | `IPv6Address` | | Python | | | `IPv6Network` | `IPv6Interface` | | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `Any` | | Python | Input value must be convertible to enum values. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | | Python | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `deque` | | Python | | | `Sequence` | `list` | ✓ | Python | | | `Sequence` | `tuple` | | Python | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `TypedDict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `UUID` | `str` | | Python | | | `UUID` | `UUID` | ✓ | Python | |
+| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bool` | `float` | | Python & JSON | Allowed values: `0.0, 1.0`. | | `bool` | `int` | | Python & JSON | Allowed values: `0, 1`. | | `bool` | `str` | | Python & JSON | Allowed values: `'f'`, `'n'`, `'no'`, `'off'`, `'false'`, `'False'`, `'t'`, `'y'`, `'on'`, `'yes'`, `'true'`, `'True'`. | | `bool` | `Decimal` | | Python | Allowed values: `Decimal(0), Decimal(1)`. | | `bytes` | `bytearray` | | Python | | | `bytes` | `bytes` | ✓ | Python | | | `bytes` | `str` | | Python | | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `bytes` | | Python | Format: `YYYY-MM-DD` (UTF-8). | | `date` | `date` | ✓ | Python | | | `date` | `datetime` | | Python | Must be exact date, eg. no `H`, `M`, `S`, `f`. | | `date` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `date` | `str` | | Python & JSON | Format: `YYYY-MM-DD`. | | `date` | `Decimal` | | Python | Interpreted as seconds or ms from epoch. See [speedate](https://docs.rs/speedate/latest/speedate/). Must be exact date. | | `datetime` | `bytes` | | Python | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `datetime` | `date` | | Python | | | `datetime` | `datetime` | ✓ | Python | | | `datetime` | `float` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `int` | | Python & JSON | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `str` | | Python & JSON | Format: `YYYY-MM-DDTHH:MM:SS.f` or `YYYY-MM-DD`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `datetime` | `Decimal` | | Python | Interpreted as seconds or ms from epoch, see [speedate](https://docs.rs/speedate/latest/speedate/). | | `deque` | `deque` | ✓ | Python | | | `deque` | `frozenset` | | Python | | | `deque` | `list` | | Python | | | `deque` | `set` | | Python | | | `deque` | `tuple` | | Python | | | `dict` | `dict` | ✓ | Python | | | `dict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `float` | `bool` | | Python & JSON | | | `float` | `bytes` | | Python | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `float` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `float` | `Decimal` | | Python | | | `frozendict` | `dict` | | Python | `frozendict` is only available in Python 3.15 and above. | | `frozendict` | `frozendict` | ✓ | Python | `frozendict` is only available in Python 3.15 and above. | | `frozendict` | `Mapping` | | Python | `frozendict` is only available in Python 3.15 and above. The input must implement the mapping interface and have an `items()` method. | | `frozenset` | `deque` | | Python | | | `frozenset` | `dict_keys` | | Python | | | `frozenset` | `dict_values` | | Python | | | `frozenset` | `frozenset` | ✓ | Python | | | `frozenset` | `list` | | Python | | | `frozenset` | `set` | | Python | | | `frozenset` | `tuple` | | Python | | | `int` | `bool` | | Python & JSON | | | `int` | `bytes` | | Python | Must be numeric only, e.g. `[0-9]+`. | | `int` | `float` | | Python & JSON | Must be exact int, e.g. `val % 1 == 0`, raises error for `nan`, `inf`. | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `int` | `int` | | Python & JSON | | | `int` | `str` | | Python & JSON | Must be numeric only, e.g. `[0-9]+`. | | `int` | `Decimal` | | Python | Must be exact int, e.g. `val % 1 == 0`. | | `list` | `deque` | | Python | | | `list` | `dict_keys` | | Python | | | `list` | `dict_values` | | Python | | | `list` | `frozenset` | | Python | | | `list` | `list` | ✓ | Python | | | `list` | `set` | | Python | | | `list` | `tuple` | | Python | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `set` | `deque` | | Python | | | `set` | `dict_keys` | | Python | | | `set` | `dict_values` | | Python | | | `set` | `frozenset` | | Python | | | `set` | `list` | | Python | | | `set` | `set` | ✓ | Python | | | `set` | `tuple` | | Python | | | `str` | `bytearray` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `bytes` | | Python | Assumes UTF-8, error on unicode decoding error. | | `str` | `str` | ✓ | Python & JSON | | | `time` | `bytes` | | Python | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `float` | | Python & JSON | Interpreted as seconds, range `0 - 86399.9*`. | | `time` | `int` | | Python & JSON | Interpreted as seconds, range `0 - 86399`. | | `time` | `str` | | Python & JSON | Format: `HH:MM:SS.FFFFFF`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `time` | `time` | ✓ | Python | | | `time` | `Decimal` | | Python | Interpreted as seconds, range `0 - 86399.9*`. | | `timedelta` | `bytes` | | Python | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/), (UTF-8). | | `timedelta` | `float` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `int` | | Python & JSON | Interpreted as seconds. | | `timedelta` | `str` | | Python & JSON | Format: `ISO8601`. See [speedate](https://docs.rs/speedate/latest/speedate/). | | `timedelta` | `timedelta` | ✓ | Python | | | `timedelta` | `Decimal` | | Python | Interpreted as seconds. | | `tuple` | `deque` | | Python | | | `tuple` | `dict_keys` | | Python | | | `tuple` | `dict_values` | | Python | | | `tuple` | `frozenset` | | Python | | | `tuple` | `list` | | Python | | | `tuple` | `set` | | Python | | | `tuple` | `tuple` | ✓ | Python | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `float` | | Python & JSON | | | `Decimal` | `int` | | Python & JSON | | | `Decimal` | `str` | | Python & JSON | Must match `[0-9]+(\.[0-9]+)?`. | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Any` | | Python | Input value must be convertible to enum values. | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `bytes` | | Python | | | `IPv4Address` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Address` | `str` | | Python & JSON | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `bytes` | | Python | | | `IPv4Interface` | `int` | | Python | integer representing the IP address, must be less than `2**32` | | `IPv4Interface` | `str` | | Python & JSON | | | `IPv4Interface` | `tuple` | | Python | | | `IPv4Interface` | `IPv4Address` | | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `bytes` | | Python | | | `IPv4Network` | `int` | | Python | integer representing the IP network, must be less than `2**32` | | `IPv4Network` | `str` | | Python & JSON | | | `IPv4Network` | `IPv4Address` | | Python | | | `IPv4Network` | `IPv4Interface` | | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `bytes` | | Python | | | `IPv6Address` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Address` | `str` | | Python & JSON | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `bytes` | | Python | | | `IPv6Interface` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Interface` | `str` | | Python & JSON | | | `IPv6Interface` | `tuple` | | Python | | | `IPv6Interface` | `IPv6Address` | | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `bytes` | | Python | | | `IPv6Network` | `int` | | Python | integer representing the IP address, must be less than `2**128` | | `IPv6Network` | `str` | | Python & JSON | | | `IPv6Network` | `IPv6Address` | | Python | | | `IPv6Network` | `IPv6Interface` | | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `Any` | | Python | Input value must be convertible to enum values. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `str` | | Python | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `deque` | | Python | | | `Sequence` | `list` | ✓ | Python | | | `Sequence` | `tuple` | | Python | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `TypedDict` | `Mapping` | | Python | Must implement the mapping interface and have an `items()` method. | | `UUID` | `str` | | Python | | | `UUID` | `UUID` | ✓ | Python | |
 
-| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bytes` | `bytes` | ✓ | Python | | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `date` | ✓ | Python | | | `datetime` | `datetime` | ✓ | Python | | | `deque` | `deque` | ✓ | Python | | | `dict` | `dict` | ✓ | Python | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `frozenset` | `frozenset` | ✓ | Python | | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `list` | `list` | ✓ | Python | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `set` | `set` | ✓ | Python | | | `str` | `str` | ✓ | Python & JSON | | | `time` | `time` | ✓ | Python | | | `timedelta` | `timedelta` | ✓ | Python | | | `tuple` | `tuple` | ✓ | Python | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `list` | ✓ | Python | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `UUID` | `UUID` | ✓ | Python | |
+| Field Type | Input | Strict | Input Source | Conditions | | --- | --- | --- | --- | --- | | `bool` | `bool` | ✓ | Python & JSON | | | `bytes` | `bytes` | ✓ | Python | | | `callable` | `Any` | ✓ | Python | `callable()` check must return `True`. | | `date` | `date` | ✓ | Python | | | `datetime` | `datetime` | ✓ | Python | | | `deque` | `deque` | ✓ | Python | | | `dict` | `dict` | ✓ | Python | | | `float` | `float` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `float` | `int` | ✓ | Python & JSON | | | `frozendict` | `frozendict` | ✓ | Python | `frozendict` is only available in Python 3.15 and above. | | `frozenset` | `frozenset` | ✓ | Python | | | `int` | `int` | ✓ | Python & JSON | `bool` is explicitly forbidden. | | `list` | `list` | ✓ | Python | | | `namedtuple` | `dict` | ✓ | Python | | | `namedtuple` | `list` | ✓ | Python | | | `namedtuple` | `namedtuple` | ✓ | Python | | | `namedtuple` | `tuple` | ✓ | Python | | | `namedtuple` | `NamedTuple` | ✓ | Python | | | `set` | `set` | ✓ | Python | | | `str` | `str` | ✓ | Python & JSON | | | `time` | `time` | ✓ | Python | | | `timedelta` | `timedelta` | ✓ | Python | | | `tuple` | `tuple` | ✓ | Python | | | `type` | `type` | ✓ | Python | | | `Any` | `Any` | ✓ | Python & JSON | | | `ByteSize` | `float` | ✓ | Python & JSON | | | `ByteSize` | `int` | ✓ | Python & JSON | | | `ByteSize` | `str` | ✓ | Python & JSON | | | `ByteSize` | `Decimal` | ✓ | Python | | | `Decimal` | `Decimal` | ✓ | Python | | | `Enum` | `Enum` | ✓ | Python | | | `IPv4Address` | `IPv4Address` | ✓ | Python | | | `IPv4Address` | `IPv4Interface` | ✓ | Python | | | `IPv4Interface` | `IPv4Interface` | ✓ | Python | | | `IPv4Network` | `IPv4Network` | ✓ | Python | | | `IPv6Address` | `IPv6Address` | ✓ | Python | | | `IPv6Address` | `IPv6Interface` | ✓ | Python | | | `IPv6Interface` | `IPv6Interface` | ✓ | Python | | | `IPv6Network` | `IPv6Network` | ✓ | Python | | | `InstanceOf` | `Any` | ✓ | Python | `isinstance()` check must return `True`. | | `IntEnum` | `IntEnum` | ✓ | Python | | | `Iterable` | `deque` | ✓ | Python | | | `Iterable` | `frozenset` | ✓ | Python | | | `Iterable` | `list` | ✓ | Python | | | `Iterable` | `set` | ✓ | Python | | | `Iterable` | `tuple` | ✓ | Python | | | `NamedTuple` | `dict` | ✓ | Python | | | `NamedTuple` | `list` | ✓ | Python | | | `NamedTuple` | `namedtuple` | ✓ | Python | | | `NamedTuple` | `tuple` | ✓ | Python | | | `NamedTuple` | `NamedTuple` | ✓ | Python | | | `None` | `None` | ✓ | Python & JSON | | | `Path` | `Path` | ✓ | Python | | | `Pattern` | `bytes` | ✓ | Python | Input must be a valid pattern. | | `Pattern` | `str` | ✓ | Python & JSON | Input must be a valid pattern. | | `Sequence` | `list` | ✓ | Python | | | `TypedDict` | `dict` | ✓ | Python | | | `TypedDict` | `Any` | ✓ | Python | | | `UUID` | `UUID` | ✓ | Python | |
 
 API Documentation
 
@@ -908,7 +908,7 @@ except pydantic.ValidationError as e:
 
 ```
 
-Because a Pydantic dataclass validates its inputs just like a model, the same observability applies: if you use [Logfire](../../integrations/logfire/), validations of Pydantic dataclasses are [recorded alongside model validations](../../errors/troubleshooting/), input included.
+Because a Pydantic dataclass validates its inputs just like a model, the same observability applies: if you use [Logfire](../../integrations/logfire/), validations of Pydantic dataclasses are [recorded alongside model validations](../../errors/troubleshooting/), with rejected values in their structured errors.
 
 The decorator can also be applied directly on a stdlib dataclass, in which case a new subclass will be created:
 
@@ -4903,7 +4903,7 @@ except ValidationError as e:
 
 ```
 
-In an example like this one, the offending `data` is right there in the code. A ValidationError includes the value rejected at each failing location, but in a running application you may also need the complete validation input and its request or job context. [Logfire records failed validations](../../errors/troubleshooting/) with both.
+In an example like this one, the offending `data` is right there in the code. A ValidationError includes the value rejected at each failing location, but in a running application you may also need those details in their request or job context. [Logfire records failed validations](../../errors/troubleshooting/) with both.
 
 ## Arbitrary class instances
 
@@ -6316,7 +6316,7 @@ Read more about `FailFast` here.
 
 [Pydantic Settings](https://github.com/pydantic/pydantic-settings) provides optional Pydantic features for loading a settings or config class from environment variables or secrets files.
 
-Settings are validated from environment variables and secrets files, so a ValidationError here points at an environment value that didn't match its field. [Logfire](../../errors/troubleshooting/) records each validation and its structured errors, so you can see which setting failed and why.
+Settings are validated from environment variables and secrets files, so a ValidationError here points at an environment value that didn't match its field. [Logfire](../../errors/troubleshooting/) can record failed validations and their structured errors, so you can see which setting failed and why.
 
 ## Installation
 
@@ -6619,6 +6619,54 @@ print(TargetVarSettings().model_dump())
 ```
 
 1. `env_prefix` will be ignored and the value will be read from `FooAlias` environment variable.
+
+The same applies to an alias on a nested model field:
+
+```py
+import os
+
+from pydantic import BaseModel, Field
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class SubModel(BaseModel):
+    var1: str | None = None
+
+
+class NestedSettings(BaseSettings):
+    # default
+    model_config = SettingsConfigDict(env_prefix='APP_', env_nested_delimiter='_')
+    submodel: SubModel | None = Field(alias='SUB', default=None)
+
+
+os.environ['APP_SUB_VAR1'] = 'ignored'  # (1)!
+print(NestedSettings().model_dump())
+#> {'submodel': {'var1': None}}
+del os.environ['APP_SUB_VAR1']
+
+os.environ['SUB_VAR1'] = 'unprefixed alias value'
+print(NestedSettings().model_dump())
+#> {'submodel': {'var1': 'unprefixed alias value'}}
+del os.environ['SUB_VAR1']
+
+
+class NestedTargetAllSettings(NestedSettings):
+    model_config = SettingsConfigDict(
+        env_prefix='APP_',
+        env_nested_delimiter='_',
+        env_prefix_target='all',
+    )
+
+
+os.environ['APP_SUB_VAR1'] = 'prefixed alias value'
+print(NestedTargetAllSettings().model_dump())
+#> {'submodel': {'var1': 'prefixed alias value'}}
+del os.environ['APP_SUB_VAR1']
+
+```
+
+1. `env_prefix` will be ignored and the alias is looked up under `SUB_VAR1`, not `APP_SUB_VAR1`.
 
 ### Case-sensitivity
 
@@ -9780,6 +9828,51 @@ print(mutable_settings.foo)
 
 ```
 
+## Caching settings
+
+Constructing a settings model reads and validates its configured settings sources each time. This can be costly when sources read from disk, such as dotenv, secrets, JSON, TOML, or YAML files, or retrieve secrets from cloud secret managers and parameter stores. Use `settings_cached()` when an application needs one default settings instance per settings class and process:
+
+```py
+import os
+
+from pydantic_settings import BaseSettings
+
+
+class Settings(BaseSettings):
+    foo: str = 'foo'
+
+
+settings = Settings.settings_cached()
+
+print(settings.foo)
+#> foo
+
+os.environ['foo'] = 'bar'
+print(Settings.settings_cached().foo)
+#> foo
+
+print(Settings().foo)
+#> bar
+
+Settings.settings_clear_cache()
+reloaded_settings = Settings.settings_cached()
+
+print(reloaded_settings.foo)
+#> bar
+
+os.environ.pop('foo')
+Settings.settings_clear_cache()
+
+```
+
+Calling the settings class directly continues to create a fresh instance. Calling `settings_clear_cache()` removes the cached instance for that class, so that the next `settings_cached()` call loads the settings sources again.
+
+Each class is cached under its own key, so a subclass never shares an instance with its parent. This also applies when clearing: `settings_clear_cache()` only removes the entry for the exact class it is called on. If you reload settings through a base class, clear each subclass you have cached as well, otherwise those subclasses keep serving their existing instances.
+
+The cache is local to each process. The cached object is shared, so any change to it is seen by every caller. Configuring the model as frozen only prevents assigning to its attributes; it does not freeze the values themselves, so a mutable field such as a list or dict can still be updated in place and that change is shared process-wide. A cached instance keeps its own class alive for the lifetime of the process, which is what makes it a singleton. If you build settings classes dynamically and need them collected, call `settings_clear_cache()` when you are done with one, and its cache entry is dropped.
+
+Since `settings_cached` and `settings_clear_cache` are added to `protected_namespaces`, defining a field whose name starts with either of those raises a `UserWarning`. If you already have such a field, rename it or override `protected_namespaces` in your model config.
+
 ## Async environments
 
 Settings are loaded synchronously. When you use sources that read from disk, such as dotenv, secrets, JSON, TOML, or YAML files, constructing a settings object in an async application can block the event loop while those files are read. To load or reload settings from an async context, run the construction in a worker thread:
@@ -10747,7 +10840,7 @@ except ValidationError as exc:
 
 ```
 
-One caveat when enabling strict mode on models an existing application relies on: inputs that were being quietly coerced will start failing. If you can't audit every caller, it helps to watch validation failures while you roll the change out. [Logfire](../../integrations/logfire/) counts successful and failed validations as metrics, and records the inputs that were rejected.
+One caveat when enabling strict mode on models an existing application relies on: inputs that were being quietly coerced will start failing. If you can't audit every caller, it helps to watch validation failures while you roll the change out. [Logfire](../../integrations/logfire/) counts successful and failed validations as metrics, and can record the rejected values included in structured errors.
 
 Strict mode can be enabled in various ways:
 
@@ -12400,7 +12493,7 @@ print(repr(pet))
 
 When union validation fails, error messages can be quite verbose, as they will produce validation errors for each case in the union. This is especially noticeable when dealing with recursive models, where reasons may be generated at each level of recursion. Discriminated unions help to simplify error messages in this case, as validation errors are only produced for the case with a matching discriminator value.
 
-Making sense of a union failure means working out which member *should* have matched. A ValidationError includes each member's errors and rejected values; when the failure happens in a deployed service, [Logfire retains those details with the complete validation input](../../errors/troubleshooting/), so you can make that comparison after the fact.
+Making sense of a union failure means working out which member *should* have matched. A ValidationError includes each member's errors and rejected values; when the failure happens in a deployed service, [Logfire retains those details with the surrounding trace](../../errors/troubleshooting/), so you can make that comparison after the fact.
 
 You can also customize the error type, message, and context for a `Discriminator` by passing these specifications as parameters to the `Discriminator` constructor, as seen in the example below.
 
@@ -12939,7 +13032,7 @@ print(foo())
 
 Currently upon validation failure, a standard Pydantic ValidationError is raised (see [model error handling](../models/#error-handling) for details). This is also true for missing required arguments, where Python normally raises a TypeError.
 
-The error identifies the argument and value that were rejected. If you also need the complete call input and its surrounding trace context, [Logfire](../../errors/troubleshooting/) records both when a decorated call fails.
+The error identifies the argument and value that were rejected. If you also need those details in the surrounding trace context, [Logfire](../../errors/troubleshooting/) can record them when a decorated call fails.
 
 ### Performance
 
@@ -13483,7 +13576,7 @@ To raise a validation error, three types of exceptions can be used:
 
   ```
 
-When a validator rejects data in production, [Logfire](../../errors/troubleshooting/) records the input alongside each validation, so you can see the value that broke the rule.
+When a validator rejects data in production, [Logfire](../../errors/troubleshooting/) can record the rejected value in its structured errors, so you can see what broke the rule.
 
 ## Validation info
 
@@ -15181,7 +15274,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
                     _object_setattr(self, name, value)
                     return None  # Can not return memoized handler with possibly freeform attr names
 
-            attr = getattr(cls, name, None)
+            attr = getattr(cls, name, _ATTRIBUTE_MISSING)
             # NOTE: We currently special case properties and `cached_property`, but we might need
             # to generalize this to all data/non-data descriptors at some point. For non-data descriptors
             # (such as `cached_property`), it isn't obvious though. `cached_property` caches the value
@@ -15201,7 +15294,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
                 if cls.model_config.get('extra') != 'allow':
                     # TODO - matching error
                     raise ValueError(f'"{cls.__name__}" object has no field "{name}"')
-                elif attr is None:
+                elif attr is _ATTRIBUTE_MISSING:
                     # attribute does not exist, so put it in extra
                     self.__pydantic_extra__[name] = value
                     self.__pydantic_fields_set__.add(name)
@@ -20518,7 +20611,7 @@ Used to provide extra information about a field, either for the model schema or 
 
 Note
 
-- Any `_Unset` objects will be replaced by the corresponding value defined in the `_DefaultValues` dictionary. If a key for the `_Unset` object is not found in the `_DefaultValues` dictionary, it will default to `None`
+- Any `_Unset` objects will be replaced by the corresponding default value of the `FieldInfo` constructor.
 
 Parameters:
 
@@ -20580,7 +20673,7 @@ def Field(  # noqa: C901
     apply only to number fields (`int`, `float`, `Decimal`) and some apply only to `str`.
 
     Note:
-        - Any `_Unset` objects will be replaced by the corresponding value defined in the `_DefaultValues` dictionary. If a key for the `_Unset` object is not found in the `_DefaultValues` dictionary, it will default to `None`
+        - Any `_Unset` objects will be replaced by the corresponding default value of the `FieldInfo` constructor.
 
     Args:
         default: Default value if the field is not set.
@@ -20763,7 +20856,59 @@ def Field(  # noqa: C901
 ## FieldInfo
 
 ```python
-FieldInfo(**kwargs: Unpack[_FieldInfoInputs])
+FieldInfo(
+    *,
+    annotation: type[Any] | None = _Unset,
+    default: Any = _Unset,
+    default_factory: (
+        Callable[[], Any]
+        | Callable[[dict[str, Any]], Any]
+        | None
+    ) = _Unset,
+    alias: str | None = _Unset,
+    alias_priority: int | None = _Unset,
+    validation_alias: (
+        str | AliasPath | AliasChoices | None
+    ) = _Unset,
+    serialization_alias: str | None = _Unset,
+    title: str | None = _Unset,
+    field_title_generator: (
+        Callable[[str, FieldInfo], str] | None
+    ) = _Unset,
+    description: str | None = _Unset,
+    examples: list[Any] | None = _Unset,
+    exclude: bool | None = _Unset,
+    exclude_if: Callable[[Any], bool] | None = _Unset,
+    discriminator: str | Discriminator | None = _Unset,
+    deprecated: Deprecated | str | bool | None = _Unset,
+    json_schema_extra: (
+        JsonDict | Callable[[JsonDict], None] | None
+    ) = _Unset,
+    frozen: bool | None = _Unset,
+    validate_default: bool | None = _Unset,
+    repr: bool = _Unset,
+    init: bool | None = _Unset,
+    init_var: bool | None = _Unset,
+    kw_only: bool | None = _Unset,
+    pattern: str | Pattern[str] | None = _Unset,
+    coerce_numbers_to_str: bool | None = _Unset,
+    strict: bool | None = _Unset,
+    gt: SupportsGt | None = _Unset,
+    ge: SupportsGe | None = _Unset,
+    lt: SupportsLt | None = _Unset,
+    le: SupportsLe | None = _Unset,
+    multiple_of: float | None = _Unset,
+    min_length: int | None = _Unset,
+    max_length: int | None = _Unset,
+    allow_inf_nan: bool | None = _Unset,
+    max_digits: int | None = _Unset,
+    decimal_places: int | None = _Unset,
+    union_mode: (
+        Literal["smart", "left_to_right"] | None
+    ) = _Unset,
+    fail_fast: bool | None = _Unset,
+    **kwargs: Any
+)
 
 ```
 
@@ -20783,61 +20928,241 @@ Attributes:
 
 | Name | Type | Description | | --- | --- | --- | | `annotation` | `type[Any] | None` | The type annotation of the field. | | `default` | `Any` | The default value of the field. | | `default_factory` | `Callable[[], Any] | Callable[[dict[str, Any]], Any] | None` | A callable to generate the default value. The callable can either take 0 arguments (in which case it is called as is) or a single argument containing the already validated data. | | `alias` | `str | None` | The alias name of the field. | | `alias_priority` | `int | None` | The priority of the field's alias. | | `validation_alias` | `str | AliasPath | AliasChoices | None` | The validation alias of the field. | | `serialization_alias` | `str | None` | The serialization alias of the field. | | `title` | `str | None` | The title of the field. | | `field_title_generator` | `Callable[[str, FieldInfo], str] | None` | A callable that takes a field's name and info and returns title for it. | | `description` | `str | None` | The description of the field. | | `examples` | `list[Any] | None` | List of examples of the field. | | `exclude` | `bool | None` | Whether to exclude the field from the model serialization. | | `exclude_if` | `Callable[[Any], bool] | None` | A callable that determines whether to exclude a field during serialization based on its value. | | `discriminator` | `str | Discriminator | None` | Field name or Discriminator for discriminating the type in a tagged union. | | `deprecated` | `Deprecated | str | bool | None` | A deprecation message, an instance of warnings.deprecated or the typing_extensions.deprecated backport, or a boolean. If True, a default deprecation message will be emitted when accessing the field. | | `json_schema_extra` | `JsonDict | Callable[[JsonDict], None] | None` | A dict or callable to provide extra JSON schema properties. | | `frozen` | `bool | None` | Whether the field is frozen. | | `validate_default` | `bool | None` | Whether to validate the default value of the field. | | `repr` | `bool` | Whether to include the field in representation of the model. | | `init` | `bool | None` | Whether the field should be included in the constructor of the dataclass. | | `init_var` | `bool | None` | Whether the field should only be included in the constructor of the dataclass, and not stored. | | `kw_only` | `bool | None` | Whether the field should be a keyword-only argument in the constructor of the dataclass. | | `metadata` | `list[Any]` | The metadata list. Contains all the data that isn't expressed as direct FieldInfo attributes, including: Type-specific constraints, such as gt or min_length (these are converted to metadata classes such as annotated_types.Gt). Any other arbitrary object used within Annotated metadata (e.g. custom types handlers or any object not recognized by Pydantic). |
 
-See the signature of `pydantic.fields.Field` for more details about the expected arguments.
+See the signature of `pydantic.fields.Field` for more details about the expected arguments. Unknown keyword arguments are accepted (and ignored) for backwards compatibility.
 
 Source code in `pydantic/fields.py`
 
 ```python
-def __init__(self, **kwargs: Unpack[_FieldInfoInputs]) -> None:
+def __init__(
+    self,
+    *,
+    annotation: type[Any] | None = _Unset,
+    default: Any = _Unset,
+    default_factory: Callable[[], Any] | Callable[[dict[str, Any]], Any] | None = _Unset,
+    alias: str | None = _Unset,
+    alias_priority: int | None = _Unset,
+    validation_alias: str | AliasPath | AliasChoices | None = _Unset,
+    serialization_alias: str | None = _Unset,
+    title: str | None = _Unset,
+    field_title_generator: Callable[[str, FieldInfo], str] | None = _Unset,
+    description: str | None = _Unset,
+    examples: list[Any] | None = _Unset,
+    exclude: bool | None = _Unset,
+    exclude_if: Callable[[Any], bool] | None = _Unset,
+    discriminator: str | types.Discriminator | None = _Unset,
+    deprecated: Deprecated | str | bool | None = _Unset,
+    json_schema_extra: JsonDict | Callable[[JsonDict], None] | None = _Unset,
+    frozen: bool | None = _Unset,
+    validate_default: bool | None = _Unset,
+    repr: bool = _Unset,
+    init: bool | None = _Unset,
+    init_var: bool | None = _Unset,
+    kw_only: bool | None = _Unset,
+    # The following arguments are converted to metadata (see `_collect_metadata()`), in the order `Field()` forwards them:
+    pattern: str | re.Pattern[str] | None = _Unset,
+    coerce_numbers_to_str: bool | None = _Unset,
+    strict: bool | None = _Unset,
+    gt: annotated_types.SupportsGt | None = _Unset,
+    ge: annotated_types.SupportsGe | None = _Unset,
+    lt: annotated_types.SupportsLt | None = _Unset,
+    le: annotated_types.SupportsLe | None = _Unset,
+    multiple_of: float | None = _Unset,
+    min_length: int | None = _Unset,
+    max_length: int | None = _Unset,
+    allow_inf_nan: bool | None = _Unset,
+    max_digits: int | None = _Unset,
+    decimal_places: int | None = _Unset,
+    union_mode: Literal['smart', 'left_to_right'] | None = _Unset,
+    fail_fast: bool | None = _Unset,
+    **kwargs: Any,
+) -> None:
     """This class should generally not be initialized directly; instead, use the `pydantic.fields.Field` function
     or one of the constructor classmethods.
 
     See the signature of `pydantic.fields.Field` for more details about the expected arguments.
+    Unknown keyword arguments are accepted (and ignored) for backwards compatibility.
     """
     # Tracking the explicitly set attributes is necessary to correctly merge `Field()` functions
     # (e.g. with `Annotated[int, Field(alias='a'), Field(alias=None)]`, even though `None` is the default value,
     # we need to track that `alias=None` was explicitly set):
-    self._attributes_set = {k: v for k, v in kwargs.items() if v is not _Unset and k not in self.metadata_lookup}
-    kwargs = {k: _DefaultValues.get(k) if v is _Unset else v for k, v in kwargs.items()}  # type: ignore
-    self.annotation = kwargs.get('annotation')
+    self._attributes_set = attributes_set = {}
 
-    # Note: in theory, the second `pop()` arguments are not required below, as defaults are already set from `_DefaultsValues`.
-    default = kwargs.pop('default', PydanticUndefined)
-    if default is Ellipsis:
-        self.default = PydanticUndefined
-        self._attributes_set.pop('default', None)
+    if annotation is _Unset:
+        annotation = None
     else:
-        self.default = default
+        attributes_set['annotation'] = annotation
+    self.annotation = annotation
 
-    self.default_factory = kwargs.pop('default_factory', None)
+    if default is _Unset or default is Ellipsis:
+        default = PydanticUndefined
+    else:
+        attributes_set['default'] = default
+    self.default = default
 
-    if self.default is not PydanticUndefined and self.default_factory is not None:
+    if default_factory is _Unset:
+        default_factory = None
+    else:
+        attributes_set['default_factory'] = default_factory
+    self.default_factory = default_factory
+
+    if default is not PydanticUndefined and default_factory is not None:
         raise TypeError('cannot specify both default and default_factory')
 
-    self.alias = kwargs.pop('alias', None)
-    self.validation_alias = kwargs.pop('validation_alias', None)
-    self.serialization_alias = kwargs.pop('serialization_alias', None)
-    alias_is_set = any(alias is not None for alias in (self.alias, self.validation_alias, self.serialization_alias))
-    self.alias_priority = kwargs.pop('alias_priority', None) or 2 if alias_is_set else None
-    self.title = kwargs.pop('title', None)
-    self.field_title_generator = kwargs.pop('field_title_generator', None)
-    self.description = kwargs.pop('description', None)
-    self.examples = kwargs.pop('examples', None)
-    self.exclude = kwargs.pop('exclude', None)
-    self.exclude_if = kwargs.pop('exclude_if', None)
-    self.discriminator = kwargs.pop('discriminator', None)
-    # For compatibility with FastAPI<=0.110.0, we preserve the existing value if it is not overridden
-    self.deprecated = kwargs.pop('deprecated', getattr(self, 'deprecated', None))
-    self.repr = kwargs.pop('repr', True)
-    self.json_schema_extra = kwargs.pop('json_schema_extra', None)
-    self.validate_default = kwargs.pop('validate_default', None)
-    self.frozen = kwargs.pop('frozen', None)
-    # currently only used on dataclasses
-    self.init = kwargs.pop('init', None)
-    self.init_var = kwargs.pop('init_var', None)
-    self.kw_only = kwargs.pop('kw_only', None)
+    if alias is _Unset:
+        alias = None
+    else:
+        attributes_set['alias'] = alias
+    self.alias = alias
 
-    self.metadata = self._collect_metadata(kwargs)  # type: ignore
+    if alias_priority is _Unset:
+        alias_priority = None
+    else:
+        attributes_set['alias_priority'] = alias_priority
+
+    if validation_alias is _Unset:
+        validation_alias = None
+    else:
+        attributes_set['validation_alias'] = validation_alias
+    self.validation_alias = validation_alias
+
+    if serialization_alias is _Unset:
+        serialization_alias = None
+    else:
+        attributes_set['serialization_alias'] = serialization_alias
+    self.serialization_alias = serialization_alias
+
+    alias_is_set = alias is not None or validation_alias is not None or serialization_alias is not None
+    self.alias_priority = (alias_priority or 2) if alias_is_set else None
+
+    if title is _Unset:
+        title = None
+    else:
+        attributes_set['title'] = title
+    self.title = title
+
+    if field_title_generator is _Unset:
+        field_title_generator = None
+    else:
+        attributes_set['field_title_generator'] = field_title_generator
+    self.field_title_generator = field_title_generator
+
+    if description is _Unset:
+        description = None
+    else:
+        attributes_set['description'] = description
+    self.description = description
+
+    if examples is _Unset:
+        examples = None
+    else:
+        attributes_set['examples'] = examples
+    self.examples = examples
+
+    if exclude is _Unset:
+        exclude = None
+    else:
+        attributes_set['exclude'] = exclude
+    self.exclude = exclude
+
+    if exclude_if is _Unset:
+        exclude_if = None
+    else:
+        attributes_set['exclude_if'] = exclude_if
+    self.exclude_if = exclude_if
+
+    if discriminator is _Unset:
+        discriminator = None
+    else:
+        attributes_set['discriminator'] = discriminator
+    self.discriminator = discriminator
+
+    if deprecated is _Unset:
+        # For compatibility with FastAPI<=0.110.0, we preserve the existing value if it is not overridden
+        deprecated = getattr(self, 'deprecated', None)
+    else:
+        attributes_set['deprecated'] = deprecated
+    self.deprecated = deprecated
+
+    if repr is _Unset:
+        repr = True
+    else:
+        attributes_set['repr'] = repr
+    self.repr = repr
+
+    if json_schema_extra is _Unset:
+        json_schema_extra = None
+    else:
+        attributes_set['json_schema_extra'] = json_schema_extra
+    self.json_schema_extra = json_schema_extra
+
+    if validate_default is _Unset:
+        validate_default = None
+    else:
+        attributes_set['validate_default'] = validate_default
+    self.validate_default = validate_default
+
+    if frozen is _Unset:
+        frozen = None
+    else:
+        attributes_set['frozen'] = frozen
+    self.frozen = frozen
+
+    # currently only used on dataclasses
+    if init is _Unset:
+        init = None
+    else:
+        attributes_set['init'] = init
+    self.init = init
+
+    if init_var is _Unset:
+        init_var = None
+    else:
+        attributes_set['init_var'] = init_var
+    self.init_var = init_var
+
+    if kw_only is _Unset:
+        kw_only = None
+    else:
+        attributes_set['kw_only'] = kw_only
+    self.kw_only = kw_only
+
+    # (in the order `Field()` forwards them, which determines the order of the metadata)
+    metadata_kwargs: dict[str, Any] = {}
+    if pattern is not _Unset:
+        metadata_kwargs['pattern'] = pattern
+    if coerce_numbers_to_str is not _Unset:
+        metadata_kwargs['coerce_numbers_to_str'] = coerce_numbers_to_str
+    if strict is not _Unset:
+        metadata_kwargs['strict'] = strict
+    if gt is not _Unset:
+        metadata_kwargs['gt'] = gt
+    if ge is not _Unset:
+        metadata_kwargs['ge'] = ge
+    if lt is not _Unset:
+        metadata_kwargs['lt'] = lt
+    if le is not _Unset:
+        metadata_kwargs['le'] = le
+    if multiple_of is not _Unset:
+        metadata_kwargs['multiple_of'] = multiple_of
+    if min_length is not _Unset:
+        metadata_kwargs['min_length'] = min_length
+    if max_length is not _Unset:
+        metadata_kwargs['max_length'] = max_length
+    if allow_inf_nan is not _Unset:
+        metadata_kwargs['allow_inf_nan'] = allow_inf_nan
+    if max_digits is not _Unset:
+        metadata_kwargs['max_digits'] = max_digits
+    if decimal_places is not _Unset:
+        metadata_kwargs['decimal_places'] = decimal_places
+    if union_mode is not _Unset:
+        metadata_kwargs['union_mode'] = union_mode
+    if fail_fast is not _Unset:
+        metadata_kwargs['fail_fast'] = fail_fast
+    self.metadata = self._collect_metadata(metadata_kwargs) if metadata_kwargs else []
+
+    if kwargs:
+        # Unknown keyword arguments (kept for backwards compatibility):
+        attributes_set.update({key: value for key, value in kwargs.items() if value is not _Unset})
 
     # Private attributes:
     self._qualifiers: set[Qualifier] = set()
@@ -23984,8 +24309,12 @@ def str_schema(self, schema: core_schema.StringSchema) -> JsonSchemaValue:
     Returns:
         The generated JSON schema.
     """
-    json_schema = {'type': 'string'}
+    json_schema: JsonSchemaValue = {'type': 'string'}
     self.update_with_validations(json_schema, schema, self.ValidationsMapping.string)
+    if 'minLength' not in json_schema and self._config.str_min_length:
+        json_schema['minLength'] = self._config.str_min_length
+    if 'maxLength' not in json_schema and self._config.str_max_length is not None:
+        json_schema['maxLength'] = self._config.str_max_length
     if isinstance(json_schema.get('pattern'), Pattern):
         # TODO: should we add regex flags to the pattern?
         json_schema['pattern'] = json_schema.get('pattern').pattern  # type: ignore
@@ -24750,44 +25079,42 @@ def dict_schema(self, schema: core_schema.DictSchema) -> JsonSchemaValue:
     Returns:
         The generated JSON schema.
     """
-    json_schema: JsonSchemaValue = {'type': 'object'}
+    return self._common_dict_schema(schema)
 
-    keys_schema = self.generate_inner(schema['keys_schema']).copy() if 'keys_schema' in schema else {}
-    if '$ref' not in keys_schema:
-        keys_pattern = keys_schema.pop('pattern', None)
-        # Don't give a title to patternProperties/propertyNames:
-        keys_schema.pop('title', None)
-    else:
-        # Here, we assume that if the keys schema is a definition reference,
-        # it can't be a simple string core schema (and thus no pattern can exist).
-        # However, this is only in practice (in theory, a definition reference core
-        # schema could be generated for a simple string schema).
-        # Note that we avoid calling `self.resolve_ref_schema`, as it might not exist yet.
-        keys_pattern = None
+```
 
-    values_schema = self.generate_inner(schema['values_schema']).copy() if 'values_schema' in schema else {}
-    # don't give a title to additionalProperties:
-    values_schema.pop('title', None)
+### frozendict_schema
 
-    if values_schema or keys_pattern is not None:
-        if keys_pattern is None:
-            json_schema['additionalProperties'] = values_schema
-        else:
-            json_schema['patternProperties'] = {keys_pattern: values_schema}
-    else:  # for `dict[str, Any]`, we allow any key and any value, since `str` is the default key type
-        json_schema['additionalProperties'] = True
+```python
+frozendict_schema(
+    schema: FrozenDictSchema,
+) -> JsonSchemaValue
 
-    if (
-        # The len check indicates that constraints are probably present:
-        (keys_schema.get('type') == 'string' and len(keys_schema) > 1)
-        # If this is a definition reference schema, it most likely has constraints:
-        or '$ref' in keys_schema
-    ):
-        keys_schema.pop('type', None)
-        json_schema['propertyNames'] = keys_schema
+```
 
-    self.update_with_validations(json_schema, schema, self.ValidationsMapping.object)
-    return json_schema
+Generates a JSON schema that matches a frozendict schema.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `FrozenDictSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `JsonSchemaValue` | The generated JSON schema. |
+
+Source code in `pydantic/json_schema.py`
+
+```python
+def frozendict_schema(self, schema: core_schema.FrozenDictSchema) -> JsonSchemaValue:
+    """Generates a JSON schema that matches a frozendict schema.
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The generated JSON schema.
+    """
+    return self._common_dict_schema(schema)
 
 ```
 
@@ -32399,6 +32726,104 @@ def dict_schema(
     """
     return _dict_not_none(
         type='dict',
+        keys_schema=keys_schema,
+        values_schema=values_schema,
+        min_length=min_length,
+        max_length=max_length,
+        fail_fast=fail_fast,
+        strict=strict,
+        ref=ref,
+        metadata=metadata,
+        serialization=serialization,
+    )
+
+````
+
+## frozendict_schema
+
+```python
+frozendict_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> FrozenDictSchema
+
+```
+
+Returns a schema that matches a `frozendict` value, e.g.:
+
+```py
+from pydantic_core import SchemaValidator, core_schema
+
+schema = core_schema.frozendict_schema(
+    keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+)
+v = SchemaValidator(schema)
+assert v.validate_python({'a': '1', 'b': 2}) == frozendict({'a': 1, 'b': 2})
+
+```
+
+Note
+
+The `frozendict` builtin type is only available in Python 3.15 and above. Using this schema on older Python versions will raise a SchemaError when the validator or serializer is built.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `keys_schema` | `CoreSchema | None` | The value must be a frozendict with keys that match this schema | `None` | | `values_schema` | `CoreSchema | None` | The value must be a frozendict with values that match this schema | `None` | | `min_length` | `int | None` | The value must be a frozendict with at least this many items | `None` | | `max_length` | `int | None` | The value must be a frozendict with at most this many items | `None` | | `fail_fast` | `bool | None` | Stop validation on the first error | `None` | | `strict` | `bool | None` | Whether the input should be validated with strict mode | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
+
+Source code in `pydantic_core/core_schema.py`
+
+````python
+def frozendict_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None,
+) -> FrozenDictSchema:
+    """
+    Returns a schema that matches a `frozendict` value, e.g.:
+
+    ```py {requires="3.15" lint="skip"}
+    from pydantic_core import SchemaValidator, core_schema
+
+    schema = core_schema.frozendict_schema(
+        keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+    )
+    v = SchemaValidator(schema)
+    assert v.validate_python({'a': '1', 'b': 2}) == frozendict({'a': 1, 'b': 2})
+    ```
+
+    !!! note
+        The `frozendict` builtin type is only available in Python 3.15 and above.
+        Using this schema on older Python versions will raise a [`SchemaError`][pydantic_core.SchemaError]
+        when the validator or serializer is built.
+
+    Args:
+        keys_schema: The value must be a frozendict with keys that match this schema
+        values_schema: The value must be a frozendict with values that match this schema
+        min_length: The value must be a frozendict with at least this many items
+        max_length: The value must be a frozendict with at most this many items
+        fail_fast: Stop validation on the first error
+        strict: Whether the input should be validated with strict mode
+        ref: optional unique identifier of the schema, used to reference the schema in other places
+        metadata: Any other information you want to include with the schema, not used by pydantic-core
+        serialization: Custom serialization schema
+    """
+    return _dict_not_none(
+        type='frozendict',
         keys_schema=keys_schema,
         values_schema=values_schema,
         min_length=min_length,
@@ -41300,6 +41725,32 @@ except ValidationError as e:
 
 ```
 
+### Frozen dictionaries
+
+Built-in type: `frozendict`.
+
+Added in v2.14: The `frozendict` type, new in Python 3.15, is supported by Pydantic.
+
+#### Validation
+
+- `frozendict` instances are accepted as is.
+- dict and mappings instances are accepted and coerced to a `frozendict`.
+- If generic parameters for keys and values are provided, the appropriate validation is applied.
+
+#### Constraints
+
+As with [dictionaries](#dictionaries), frozen dictionaries support the following constraints:
+
+| Constraint | Description | JSON Schema | | --- | --- | --- | | `min_length` | The dictionary must have at least this many items | [`minItems`](https://json-schema.org/understanding-json-schema/reference/array#length) keyword | | `max_length` | The dictionary must have at most this many items | [`maxItems`](https://json-schema.org/understanding-json-schema/reference/array#length) keyword |
+
+These constraints can be provided using the Field() function. The `MinLen` and `MaxLen` metadata types from the [`annotated-types`](https://github.com/annotated-types/annotated-types) library can also be used.
+
+#### Strictness
+
+In [strict mode](../../concepts/strict_mode/), only `frozendict` instances are valid. Strict mode does *not* apply to the keys and values of the frozen dictionaries. The strict constraint must be applied to the parameter types for this to work.
+
+#### Example
+
 ### Typed dictionaries
 
 Standard library type: typing.TypedDict (see also: the [typing specification](https://typing.python.org/en/latest/spec/typeddict.html)).
@@ -48388,7 +48839,7 @@ The ErrorDetails object is a dictionary. It contains the following:
 
 The first item in the loc list will be the field where the error occurred, and if the field is a [sub-model](../../concepts/models/#nested-models), subsequent items will be present to indicate the nested location of the error.
 
-For validations spread across a running service, [Logfire](../troubleshooting/) records this same structured error list together with the complete validation input and trace context, without wrapping each call in `try`/`except`.
+For validations spread across a running service, [Logfire](../troubleshooting/) records this same structured error list and surrounding trace context, without wrapping each call in `try`/`except`.
 
 As a demonstration:
 
@@ -48643,11 +49094,17 @@ except ValidationError as e:
 
 When a ValidationError is raised, the message tells you *what* went wrong: which field, which rule, and the value that triggered it. In production, the hard part is usually everything the message *can't* show you: where that data came from, how often it happens, and what else your application was doing at the time. By the time you read the log, the payload that failed is often already gone.
 
-## Getting started
+## Record a production failure
 
-Troubleshooting validation errors in production is much easier when something records them as they happen, capturing the input alongside the error. Logfire's Pydantic integration does this: it records each validation as it runs, so you can open the one that failed instead of reconstructing it from logs after the fact.
+You need a [free Logfire account](https://logfire.pydantic.dev/login) and a project. From your project directory, install the SDK and sign in:
 
-If you haven't set it up yet, follow the three-step [getting started guide](https://pydantic.dev/docs/logfire/get-started/), then instrument your application:
+```bash
+pip install logfire
+logfire auth
+
+```
+
+Then instrument your application before defining or importing the models you want to monitor:
 
 ```python
 from datetime import date
@@ -48670,38 +49127,43 @@ User(name='Anne', country_code='USA', dob='not-a-date')  # (2)!
 
 ```
 
-1. `record='failure'` records a trace for each *failed* validation, while still collecting metrics for all of them. Drop it (the default is `record='all'`) if you also want a trace for every successful validation.
-1. This validation fails because `dob` is not a valid date. Logfire records the input, the error, and the surrounding context, so you can troubleshoot it without adding any logging of your own.
+1. `record='failure'` creates an individual warning record only when validation fails, while still collecting metrics for every validation.
+1. Run the example and choose or create a Logfire project when prompted. The invalid date produces a warning in Logfire's Live view.
 
-Once instrumented, each failed validation shows up in the live view, recorded with:
+Once instrumented, each failed validation shows up in the Live view, recorded with:
 
-- **Its input**: the exact data passed to validation, so you don't have to reconstruct the payload from logs or guess what your model received.
-- **Its context**: a span alongside the surrounding request, task, or trace, so you can follow bad data back to its source.
+- **Its rejected values**: the values included in Pydantic's structured errors, so you can inspect what failed without parsing the rendered exception string.
+- **Its context**: a warning attached to the surrounding request, task, or trace, so you can follow bad data back to its source.
 - **A queryable history**: every failure is stored, so you can ask "which field fails most often?" or "did this error spike after the last deploy?" in SQL.
 - **No extra logging code**: one `logfire.instrument_pydantic()` call covers all your models; you don't wrap each validation attempt in a `try`/`except`.
 
-Recording the input naturally raises the question of sensitive data, since the failing payload may contain it. The Logfire SDK [scrubs common sensitive values](https://pydantic.dev/docs/logfire/instrument/scrubbing/) (things that look like passwords, tokens, or other secrets) from spans before they leave your machine, and you can extend the rules for your own fields.
+To see where a rejected value came from, instrument the part of the application that feeds the model as well. Logfire's [framework and library integrations](https://pydantic.dev/docs/logfire/integrations/) put the failed-validation record inside the active request, task, or job trace. You can then follow the same trace across the caller, model validation, database work, and response instead of reconstructing the path from separate logs.
 
-## Reading the error from the trace
+Review validation data before exporting it
 
-Beyond the plain-language explanation, each failed validation span shows the raw structured errors() list next to the input that produced it: the field path (`loc`), the machine-readable `type`, and the offending value, so you can see which field failed and with what value without parsing the rendered message string by hand.
+Failed-validation records contain the rejected values from Pydantic's structured errors. The Logfire SDK [scrubs common sensitive values](https://pydantic.dev/docs/logfire/instrument/scrubbing/) before export, but Logfire stores every rejected value under the key `input` inside the serialized `errors` attribute, separately from its field path. If those values can contain secrets or personal data, pass `scrubbing=logfire.ScrubbingOptions(extra_patterns=[r'(?:^input$|"input"\s*:)'])` to `logfire.configure()`. The two alternatives tell the scrubber to inspect serialized validation errors and redact every value whose exact key is `input`; neither refers to your model's field names. Alternatively, use `record='metrics'` so individual failures are not exported.
 
-## From one failure to the pattern
+## Read the structured error
 
-A single trace tells you about one failure. Often the more useful question is whether it's a one-off or something recurring. Logfire [groups repeated exceptions into issues](https://pydantic.dev/docs/logfire/observe/issues/), so a validation that fails a thousand times shows up as one entry with a count and a first-seen time, rather than a thousand lines to scroll through, which makes it easy to tell a genuine spike from background noise.
+Beyond the plain-language explanation, each failed validation record shows the raw structured errors() list: the field path (`loc`), the machine-readable `type`, and the offending value included with that error. You can see which field failed and with what value without parsing the rendered message string by hand.
+
+## See whether the failure is recurring
+
+A single record tells you about one failure. The metrics collected by `record='failure'` show whether validation failures are increasing without storing a successful input each time. Filter the Live view by `schema_name`, or query the structured `errors` field to find the models, fields, and error types that fail most often.
 
 Once you know which failures matter, you don't have to keep watching for them. Logfire [alerts](https://pydantic.dev/docs/logfire/observe/alerts/) run a SQL query on a schedule and notify you (for example, in Slack) when it matches. A rule like "validation failures for this model crossed a threshold" means the next occurrence finds you instead of a user reporting it.
 
 ## Have Logfire explain the error
 
-Open a failed validation span in [Pydantic Logfire](../../integrations/logfire/) and it explains the failure in plain language (currently in beta), reading the structured errors and, for each field, telling you what was expected and what it received, including the messages from your own [custom validators](../../concepts/validators/#raising-validation-errors). You get to the fix without memorising every [error code](../validation_errors/).
+Logfire can explain a failed validation span in plain language, reading the structured errors and, for each field, telling you what was expected and what it received, including messages from your own [custom validators](../../concepts/validators/#raising-validation-errors). This early-access feature currently requires **Pydantic validation suggestions** to be enabled in Logfire and `record='all'`, so the failure is captured as a validation span rather than a warning record. You get to the fix without memorising every [error code](../validation_errors/).
 
-If you debug with an AI coding agent, the [Logfire MCP server](https://pydantic.dev/docs/logfire/guides/mcp-server/) lets the agent query your telemetry directly, including the input and errors from a failed validation, so it can investigate against your real data instead of guessing.
+If you debug with an AI coding agent, the [Logfire MCP server](https://pydantic.dev/docs/logfire/guides/mcp-server/) lets the agent query your telemetry directly, including the structured errors and surrounding trace, so it can investigate against your real data instead of guessing.
 
-## Learn more
+## Next steps
 
-- [Pydantic Logfire integration](../../integrations/logfire/): how to install and configure Logfire with Pydantic.
-- [Logfire documentation](https://pydantic.dev/docs/logfire/get-started/): the full Logfire docs.
+- [Pydantic Logfire integration](../../integrations/logfire/): choose what to record and add the surrounding application trace.
+- [Scrubbing](https://pydantic.dev/docs/logfire/instrument/scrubbing/): review and redact sensitive validation data before export.
+- [Alerts](https://pydantic.dev/docs/logfire/observe/alerts/): get notified when failures cross a threshold.
 
 For a reference of the individual error types you may encounter, see [Validation Errors](../validation_errors/) and [Usage Errors](../usage_errors/).
 
@@ -50264,7 +50726,7 @@ except PydanticUserError as exc_info:
 
 Pydantic attempts to provide useful validation errors. Below are details on common validation errors users may encounter when working with pydantic, together with some suggestions on how to fix them.
 
-The entries below explain what each error type means. To also see *which input* triggered an error in a live service, [Logfire](../troubleshooting/) records the input and structured errors for each validation — see [Troubleshooting Validation Errors](../troubleshooting/).
+The entries below explain what each error type means. To see the rejected values and surrounding trace when one occurs in a live service, [Logfire](../troubleshooting/) can record failed validations with their structured errors. See [Troubleshooting Validation Errors](../troubleshooting/) for setup and sensitive-data considerations.
 
 ## `arguments_type`
 
@@ -51181,6 +51643,10 @@ except ValidationError as exc:
     #> 'fraction_type'
 
 ```
+
+## `frozen_dict_type`
+
+This error is raised when the input value's type is not valid for a `frozendict` field:
 
 ## `frozen_field`
 
@@ -53366,7 +53832,7 @@ print(people)
 
 1. We use TypeAdapter to validate a list of `Person` objects. TypeAdapter is a Pydantic construct used to validate data against a single type.
 
-With two records, spotting a bad one is easy. In a pipeline processing files with thousands of records, the error's `loc` gives you the index of the failing one, and if the pipeline runs unattended, [Logfire](../../errors/troubleshooting/) records each failed validation with its input, so you can find the offending record after the run.
+With two records, spotting a bad one is easy. In a pipeline processing files with thousands of records, the error's `loc` gives you the index of the failing one, and if the pipeline runs unattended, [Logfire](../../errors/troubleshooting/) records failed validations with their field locations and rejected values, so you can find the offending record after the run.
 
 ## JSON lines files
 
@@ -53632,7 +54098,7 @@ Note
 
 The example above works because aliases have priority over field names for field population. Accessing `SQLModel`'s `metadata` attribute would lead to a `ValidationError`.
 
-Validating ORM objects can surface a less obvious class of failure: rows written before a constraint was added, or columns that allow `NULL` where your model doesn't. These only fail when the offending row is actually read, which may be long after a deploy, and [recording failed validations](../../errors/troubleshooting/) retains the input object alongside the error, which can help identify the offending row.
+Validating ORM objects can surface a less obvious class of failure: rows written before a constraint was added, or columns that allow `NULL` where your model doesn't. These only fail when the offending row is actually read, which may be long after a deploy, and [recording failed validations](../../errors/troubleshooting/) retains their structured errors and rejected values, which can help identify the offending data.
 
 [Pydantic AI](https://pydantic.dev/docs/ai/overview/) is a Python agent framework built by the Pydantic team that uses Pydantic validation for [structured output](https://pydantic.dev/docs/ai/core-concepts/output/#structured-output) schema generation and validation. By specifying an `output_type` on an Agent, you can constrain the LLM to return data that matches your Pydantic model schema.
 
@@ -53840,7 +54306,7 @@ To test this example:
 1. Run the receiver script in one terminal to start the consumer.
 1. Run the sender script in another terminal to send messages.
 
-One thing to keep in mind with consumers like this: if `model_validate_json` raises a ValidationError, the message that caused it may no longer be on the queue by the time you investigate, making the failure hard to reproduce. It's worth recording failed validations as they happen, for example with [Logfire](../../errors/troubleshooting/), which captures the message body alongside the error:
+One thing to keep in mind with consumers like this: if `model_validate_json` raises a ValidationError, the message that caused it may no longer be on the queue by the time you investigate, making the failure hard to reproduce. It's worth recording failed validations as they happen, for example with [Logfire](../../errors/troubleshooting/), which captures their field locations and rejected values in structured errors:
 
 ```python
 import logfire
@@ -53985,7 +54451,7 @@ pprint([u.name for u in users])
 
 1. Note, we're querying the `/users/` endpoint here to get a list of users.
 
-When you validate responses like this, a ValidationError is often the first sign that an API you depend on has changed its response format. The useful questions at that point are *what did the response actually contain*, and *when did this start*: [recording failed validations with Logfire](../../errors/troubleshooting/) answers both, since each failure is stored with the data that triggered it.
+When you validate responses like this, a ValidationError is often the first sign that an API you depend on has changed its response format. The useful questions at that point are *what did the response actually contain*, and *when did this start*: [recording failed validations with Logfire](../../errors/troubleshooting/) answers both, since each failure is stored with its structured errors and rejected values.
 
 `pydantic` integrates well with AWS Lambda functions. In this guide, we'll discuss how to setup `pydantic` for an AWS Lambda function.
 
@@ -54103,7 +54569,7 @@ If you're still struggling with installing `pydantic` for your AWS Lambda, you m
 
 Check out our [blog post](https://pydantic.dev/articles/lambda-intro) to learn more about how to use `pydantic` to validate `event` and `context` data in AWS Lambda functions.
 
-Validation failures are particularly awkward to debug in Lambda: you can't attach a debugger, and the event that caused the failure disappears with the invocation. If you record validations with [Logfire](../logfire/), each failed validation is stored with the payload that caused it, and its [AWS Lambda integration](https://pydantic.dev/docs/logfire/integrations/aws-lambda/) captures the surrounding invocation.
+Validation failures are particularly awkward to debug in Lambda: you can't attach a debugger, and the event that caused the failure disappears with the invocation. If you record validations with [Logfire](../logfire/), each failed validation is stored with its structured errors and rejected values, and its [AWS Lambda integration](https://pydantic.dev/docs/logfire/integrations/aws-lambda/) captures the surrounding invocation.
 
 # Code Generation with datamodel-code-generator
 
@@ -54220,7 +54686,7 @@ More information can be found on the [official documentation](https://datamodel-
 
 A model generated from an OpenAPI or JSON Schema document is a snapshot of that contract. When the upstream data stops matching it (a field changes type, a new required field appears), the mismatch surfaces as a ValidationError at runtime, often the first sign the source has drifted from the schema you generated against.
 
-If you [record validations with Logfire](../../errors/troubleshooting/), those failures are stored with the payload that caused them, so you can see *what* changed and *when* it started, useful when you don't own the schema and can't regenerate the models until you know what moved.
+If you [record validations with Logfire](../../errors/troubleshooting/), those failures are stored with their structured errors and rejected values, so you can see *what* changed and *when* it started, useful when you don't own the schema and can't regenerate the models until you know what moved.
 
 Note
 
@@ -54362,49 +54828,21 @@ As of today, these files *cannot* be natively leveraged by LLM frameworks or IDE
 
 Where `llms.txt` gives an AI tool the Pydantic *documentation*, the [Logfire MCP server](https://pydantic.dev/docs/logfire/guides/mcp-server/) gives it your application's *runtime data*: an agent can query the traces, metrics, and recorded validations from your own service and, for example, pull up the input behind a ValidationError while it's helping you fix it.
 
-Pydantic integrates seamlessly with **Pydantic Logfire**, an observability platform built by us on the same belief as our open source library — that the most powerful tools can be easy to use.
+# Pydantic Logfire
 
-## Getting Started
+Find the data behind production `ValidationError`s. Logfire records failed Pydantic validations with their structured errors and can keep them inside the surrounding request or job trace, so you can see what failed, where the input came from, and whether the same problem keeps happening.
 
-Logfire has an out-of-the-box Pydantic integration that lets you understand the data passing through your Pydantic models and get analytics on validations. For existing Pydantic users, it delivers unparalleled insights into your usage of Pydantic models.
+## Record failed validations
 
-[Getting started](https://pydantic.dev/docs/logfire/get-started/) with Logfire can be done in three simple steps:
+You need a [free Logfire account](https://logfire.pydantic.dev/login) and project. From your project directory, install the SDK and sign in:
 
-1. Set up your Logfire account.
-1. Install the Logfire SDK.
-1. Instrument your project.
-
-### Basic Usage
-
-Once you've got Logfire set up, you can start using it to monitor your Pydantic models and get insights into your data validation:
-
-```python
-from datetime import date
-
-import logfire
-
-from pydantic import BaseModel
-
-logfire.configure()  # (1)!
-
-
-class User(BaseModel):
-    name: str
-    country_code: str
-    dob: date
-
-
-user = User(name='Anne', country_code='USA', dob='2000-01-01')
-logfire.info('user processed: {user!r}', user=user)  # (2)!
+```bash
+pip install logfire
+logfire auth
 
 ```
 
-1. The `logfire.configure()` call is all you need to instrument your project with Logfire.
-1. The `logfire.info()` call logs the `user` object to Logfire, with builtin support for Pydantic models.
-
-### Pydantic Instrumentation
-
-You can even record information about the validation process automatically by using the builtin [Pydantic integration](https://pydantic.dev/docs/logfire/get-started/why/#pydantic-integration):
+Call `instrument_pydantic()` before defining or importing the models you want to monitor:
 
 ```python
 from datetime import date
@@ -54414,7 +54852,7 @@ import logfire
 from pydantic import BaseModel
 
 logfire.configure()
-logfire.instrument_pydantic()  # (1)!
+logfire.instrument_pydantic(record='failure')  # (1)!
 
 
 class User(BaseModel):
@@ -54423,18 +54861,72 @@ class User(BaseModel):
     dob: date
 
 
-User(name='Anne', country_code='USA', dob='2000-01-01')
-User(name='David', country_code='GBR', dob='invalid-dob')
+User(name='Anne', country_code='USA', dob='not-a-date')  # (2)!
 
 ```
 
-1. The `logfire.instrument_pydantic()` call automatically logs validation information for all Pydantic models in your project.
+1. Successful validations stay as aggregate metrics. Failed validations create individual warning records with their structured errors.
+1. Run the example and choose or create a Logfire project when prompted. The invalid date produces a warning record in Logfire's Live view.
 
-You'll see each successful and failed validation logged in Logfire:
+Review validation data before exporting it
 
-And you can investigate each of the corresponding spans to get validation details:
+Failed-validation records contain the rejected values from Pydantic's structured errors. Logfire [scrubs common sensitive values](https://pydantic.dev/docs/logfire/instrument/scrubbing/) before export, but Logfire stores every rejected value under the key `input` inside the serialized `errors` attribute, separately from its field path. If those values can contain secrets or personal data, pass `scrubbing=logfire.ScrubbingOptions(extra_patterns=[r'(?:^input$|"input"\s*:)'])` to `logfire.configure()`. The two alternatives tell the scrubber to inspect serialized validation errors and redact every value whose exact key is `input`; neither refers to your model's field names. Alternatively, use `record='metrics'` so individual failures are not exported.
 
-This is especially useful when a ValidationError shows up in production and you need the input that caused it — see [Troubleshooting Validation Errors with Logfire](../../errors/troubleshooting/).
+Open the warning to inspect the rejected values, error type and field path, and any request or job trace active when validation ran. For a deeper walkthrough, see [Troubleshooting Validation Errors](../../errors/troubleshooting/).
+
+## Choose how much to record
+
+The `record` argument controls the balance between detail and data volume:
+
+| Setting | Individual records | Metrics | | --- | --- | --- | | `failure` | Failed validations only | All validations | | `all` (default) | Every successful and failed validation | All validations | | `metrics` | None | All validations | | `off` | None | None |
+
+Use `failure` for production troubleshooting without creating an individual record for every successful validation. Use `all` while developing when you want to inspect successful inputs and validated results too.
+
+```python
+import logfire
+
+logfire.instrument_pydantic(record='all')
+
+```
+
+For per-model settings, third-party model inclusion, and configuration through environment variables or `pyproject.toml`, see the full [Logfire Pydantic integration reference](https://pydantic.dev/docs/logfire/integrations/pydantic/).
+
+## Add the surrounding application trace
+
+Pydantic tells you which value failed. Instrument your web framework, database client, or task queue to see where that value came from and what happened around it. For example, a FastAPI trace can show the request that reached your endpoint, the failed model validation, and the response returned to the caller in one timeline.
+
+See [Logfire integrations](https://pydantic.dev/docs/logfire/integrations/) for FastAPI, Django, Celery, SQLAlchemy, HTTPX, and more.
+
+## Log a validated model explicitly
+
+You can also attach a Pydantic model to your own structured log or span. Logfire preserves the model's fields so you can inspect and query them:
+
+```python
+from datetime import date
+
+import logfire
+
+from pydantic import BaseModel
+
+logfire.configure()
+
+
+class User(BaseModel):
+    name: str
+    country_code: str
+    dob: date
+
+
+user = User(name='Anne', country_code='USA', dob='2000-01-01')
+logfire.info('user processed: {user!r}', user=user)
+
+```
+
+## Troubleshooting
+
+- **No validation records appear:** make sure `logfire.configure()` runs and that `instrument_pydantic()` runs before the model class is defined or imported.
+- **Successful validations do not appear:** `record='failure'` keeps them as metrics only. Use `record='all'` when you need an individual span for each success.
+- **You need to inspect successful validations too:** use `record='all'`. This creates an individual span for every validation, so review its data-volume and privacy implications before using it in production.
 
 Pydantic works well with [mypy](https://www.mypy-lang.org/) right out of the box.
 
