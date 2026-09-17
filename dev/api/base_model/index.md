@@ -525,7 +525,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         )
 
     @classmethod
-    def model_parametrized_name(cls, params: tuple[type[Any], ...]) -> str:
+    def model_parametrized_name(cls, params: tuple[TypeForm[Any], ...]) -> str:
         """Compute the class name for parametrizations of generic classes.
 
         This method can be overridden to achieve a custom naming scheme for generic BaseModels.
@@ -593,16 +593,12 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
 
             cls.__pydantic_complete__ = False
 
-            for attr in ('__pydantic_core_schema__', '__pydantic_validator__', '__pydantic_serializer__'):
-                if attr in cls.__dict__ and not isinstance(
-                    getattr(cls, attr), (_mock_val_ser.MockCoreSchema, _mock_val_ser.MockValSer)
-                ):
-                    # Deleting the validator/serializer is necessary as otherwise they can get reused in
-                    # pydantic-core. Same applies for the core schema that can be reused in schema generation.
-                    # We do so only if they aren't mock instances, otherwise concurrent reads of these attributes
-                    # — performed without holding the rebuild lock (e.g. when instantiating the model) — can
-                    # resolve them from the parent class.
-                    delattr(cls, attr)
+            if already_complete:
+                # The existing validator/serializer must not be reused in pydantic-core, and the core schema
+                # must not be reused in schema generation. If the model is already complete (i.e. `force=True`),
+                # we set back mocks for the model (we could also delete the complete core schema/validator/serializer,
+                # but this isn't thread-safe).
+                _mock_val_ser.set_model_mocks(cls)
 
             if _types_namespace is not None:
                 rebuild_ns = _types_namespace
@@ -851,7 +847,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         """
 
     def __class_getitem__(
-        cls, typevar_values: type[Any] | tuple[type[Any], ...]
+        cls, typevar_values: TypeForm[Any] | tuple[TypeForm[Any], ...]
     ) -> type[BaseModel] | _forward_ref.PydanticRecursiveRef:
         cached = _generics.get_cached_generic_type_early(cls, typevar_values)
         if cached is not None:
@@ -2286,7 +2282,7 @@ def model_json_schema(
 
 ```python
 model_parametrized_name(
-    params: tuple[type[Any], ...],
+    params: tuple[TypeForm[Any], ...],
 ) -> str
 
 ```
@@ -2297,7 +2293,7 @@ This method can be overridden to achieve a custom naming scheme for generic Base
 
 Parameters:
 
-| Name | Type | Description | Default | | --- | --- | --- | --- | | `params` | `tuple[type[Any], ...]` | Tuple of types of the class. Given a generic class Model with 2 type variables and a concrete model Model[str, int], the value (str, int) would be passed to params. | *required* |
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `params` | `tuple[TypeForm[Any], ...]` | Tuple of types of the class. Given a generic class Model with 2 type variables and a concrete model Model[str, int], the value (str, int) would be passed to params. | *required* |
 
 Returns:
 
@@ -2311,7 +2307,7 @@ Source code in `pydantic/main.py`
 
 ```python
 @classmethod
-def model_parametrized_name(cls, params: tuple[type[Any], ...]) -> str:
+def model_parametrized_name(cls, params: tuple[TypeForm[Any], ...]) -> str:
     """Compute the class name for parametrizations of generic classes.
 
     This method can be overridden to achieve a custom naming scheme for generic BaseModels.
@@ -2423,16 +2419,12 @@ def model_rebuild(
 
         cls.__pydantic_complete__ = False
 
-        for attr in ('__pydantic_core_schema__', '__pydantic_validator__', '__pydantic_serializer__'):
-            if attr in cls.__dict__ and not isinstance(
-                getattr(cls, attr), (_mock_val_ser.MockCoreSchema, _mock_val_ser.MockValSer)
-            ):
-                # Deleting the validator/serializer is necessary as otherwise they can get reused in
-                # pydantic-core. Same applies for the core schema that can be reused in schema generation.
-                # We do so only if they aren't mock instances, otherwise concurrent reads of these attributes
-                # — performed without holding the rebuild lock (e.g. when instantiating the model) — can
-                # resolve them from the parent class.
-                delattr(cls, attr)
+        if already_complete:
+            # The existing validator/serializer must not be reused in pydantic-core, and the core schema
+            # must not be reused in schema generation. If the model is already complete (i.e. `force=True`),
+            # we set back mocks for the model (we could also delete the complete core schema/validator/serializer,
+            # but this isn't thread-safe).
+            _mock_val_ser.set_model_mocks(cls)
 
         if _types_namespace is not None:
             rebuild_ns = _types_namespace
@@ -2725,7 +2717,9 @@ create_model(
     ) = None,
     __cls_kwargs__: dict[str, Any] | None = None,
     __qualname__: str | None = None,
-    **field_definitions: Any | tuple[Any, Any],
+    **field_definitions: (
+        TypeForm[Any] | tuple[TypeForm[Any], Any]
+    ),
 ) -> type[BaseModel]
 
 ```
@@ -2744,7 +2738,9 @@ create_model(
     ) = None,
     __cls_kwargs__: dict[str, Any] | None = None,
     __qualname__: str | None = None,
-    **field_definitions: Any | tuple[Any, Any],
+    **field_definitions: (
+        TypeForm[Any] | tuple[TypeForm[Any], Any]
+    ),
 ) -> type[ModelT]
 
 ```
@@ -2765,7 +2761,9 @@ create_model(
     ) = None,
     __cls_kwargs__: dict[str, Any] | None = None,
     __qualname__: str | None = None,
-    **field_definitions: Any | tuple[Any, Any],
+    **field_definitions: (
+        TypeForm[Any] | tuple[TypeForm[Any], Any]
+    ),
 ) -> type[ModelT]
 
 ```
@@ -2784,7 +2782,7 @@ See [Security implications of introspecting annotations](https://docs.python.org
 
 Parameters:
 
-| Name | Type | Description | Default | | --- | --- | --- | --- | | `model_name` | `str` | The name of the newly created model. | *required* | | `__config__` | `ConfigDict | None` | The configuration of the new model. | `None` | | `__doc__` | `str | None` | The docstring of the new model. | `None` | | `__base__` | `type[ModelT] | tuple[type[ModelT], ...] | None` | The base class or classes for the new model. | `None` | | `__module__` | `str | None` | The name of the module that the model belongs to; if None, the value is taken from sys.\_getframe(1) | `None` | | `__validators__` | `dict[str, Callable[..., Any]] | None` | A dictionary of methods that validate fields. The keys are the names of the validation methods to be added to the model, and the values are the validation methods themselves. You can read more about functional validators here. | `None` | | `__cls_kwargs__` | `dict[str, Any] | None` | A dictionary of keyword arguments for class creation, such as metaclass. | `None` | | `__qualname__` | `str | None` | The qualified name of the newly created model. | `None` | | `**field_definitions` | `Any | tuple[Any, Any]` | Field definitions of the new model. Either: a single element, representing the type annotation of the field. a two-tuple, the first element being the type and the second element the assigned value (either a default or the Field() function). | `{}` |
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `model_name` | `str` | The name of the newly created model. | *required* | | `__config__` | `ConfigDict | None` | The configuration of the new model. | `None` | | `__doc__` | `str | None` | The docstring of the new model. | `None` | | `__base__` | `type[ModelT] | tuple[type[ModelT], ...] | None` | The base class or classes for the new model. | `None` | | `__module__` | `str | None` | The name of the module that the model belongs to; if None, the value is taken from sys.\_getframe(1) | `None` | | `__validators__` | `dict[str, Callable[..., Any]] | None` | A dictionary of methods that validate fields. The keys are the names of the validation methods to be added to the model, and the values are the validation methods themselves. You can read more about functional validators here. | `None` | | `__cls_kwargs__` | `dict[str, Any] | None` | A dictionary of keyword arguments for class creation, such as metaclass. | `None` | | `__qualname__` | `str | None` | The qualified name of the newly created model. | `None` | | `**field_definitions` | `TypeForm[Any] | tuple[TypeForm[Any], Any]` | Field definitions of the new model. Either: a single element, representing the type annotation of the field. a two-tuple, the first element being the type and the second element the assigned value (either a default or the Field() function). | `{}` |
 
 Returns:
 
@@ -2808,8 +2806,7 @@ def create_model(  # noqa: C901
     __validators__: dict[str, Callable[..., Any]] | None = None,
     __cls_kwargs__: dict[str, Any] | None = None,
     __qualname__: str | None = None,
-    # TODO PEP 747: replace `Any` by the TypeForm:
-    **field_definitions: Any | tuple[Any, Any],
+    **field_definitions: TypeForm[Any] | tuple[TypeForm[Any], Any],
 ) -> type[ModelT]:
     """!!! abstract "Usage Documentation"
         [Dynamic Model Creation](../concepts/models.md#dynamic-model-creation)

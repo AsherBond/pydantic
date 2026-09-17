@@ -1152,6 +1152,7 @@ str_schema(
     strip_whitespace: bool | None = None,
     to_lower: bool | None = None,
     to_upper: bool | None = None,
+    ascii_only: bool | None = None,
     regex_engine: (
         Literal["rust-regex", "python-re"] | None
     ) = None,
@@ -1177,7 +1178,7 @@ assert v.validate_python('hello') == 'hello'
 
 Parameters:
 
-| Name | Type | Description | Default | | --- | --- | --- | --- | | `pattern` | `str | Pattern[str] | None` | A regex pattern that the value must match | `None` | | `max_length` | `int | None` | The value must be at most this length | `None` | | `min_length` | `int | None` | The value must be at least this length | `None` | | `strip_whitespace` | `bool | None` | Whether to strip whitespace from the value | `None` | | `to_lower` | `bool | None` | Whether to convert the value to lowercase | `None` | | `to_upper` | `bool | None` | Whether to convert the value to uppercase | `None` | | `regex_engine` | `Literal['rust-regex', 'python-re'] | None` | The regex engine to use for pattern validation. Default is 'rust-regex'. - rust-regex uses the regex Rust crate, which is non-backtracking and therefore more DDoS resistant, but does not support all regex features. - python-re use the re module, which supports all regex features, but may be slower. | `None` | | `strict` | `bool | None` | Whether the value should be a string or a value that can be converted to a string | `None` | | `coerce_numbers_to_str` | `bool | None` | Whether to enable coercion of any Number type to str (not applicable in strict mode). | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `pattern` | `str | Pattern[str] | None` | A regex pattern that the value must match | `None` | | `max_length` | `int | None` | The value must be at most this length | `None` | | `min_length` | `int | None` | The value must be at least this length | `None` | | `strip_whitespace` | `bool | None` | Whether to strip whitespace from the value | `None` | | `to_lower` | `bool | None` | Whether to convert the value to lowercase | `None` | | `to_upper` | `bool | None` | Whether to convert the value to uppercase | `None` | | `ascii_only` | `bool | None` | Whether the value must contain only ASCII characters | `None` | | `regex_engine` | `Literal['rust-regex', 'python-re'] | None` | The regex engine to use for pattern validation. Default is 'rust-regex'. - rust-regex uses the regex Rust crate, which is non-backtracking and therefore more DDoS resistant, but does not support all regex features. - python-re use the re module, which supports all regex features, but may be slower. | `None` | | `strict` | `bool | None` | Whether the value should be a string or a value that can be converted to a string | `None` | | `coerce_numbers_to_str` | `bool | None` | Whether to enable coercion of any Number type to str (not applicable in strict mode). | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
 
 Source code in `pydantic_core/core_schema.py`
 
@@ -1190,6 +1191,7 @@ def str_schema(
     strip_whitespace: bool | None = None,
     to_lower: bool | None = None,
     to_upper: bool | None = None,
+    ascii_only: bool | None = None,
     regex_engine: Literal['rust-regex', 'python-re'] | None = None,
     strict: bool | None = None,
     coerce_numbers_to_str: bool | None = None,
@@ -1215,6 +1217,7 @@ def str_schema(
         strip_whitespace: Whether to strip whitespace from the value
         to_lower: Whether to convert the value to lowercase
         to_upper: Whether to convert the value to uppercase
+        ascii_only: Whether the value must contain only ASCII characters
         regex_engine: The regex engine to use for pattern validation. Default is 'rust-regex'.
             - `rust-regex` uses the [`regex`](https://docs.rs/regex) Rust
               crate, which is non-backtracking and therefore more DDoS
@@ -1235,6 +1238,7 @@ def str_schema(
         strip_whitespace=strip_whitespace,
         to_lower=to_lower,
         to_upper=to_upper,
+        ascii_only=ascii_only,
         regex_engine=regex_engine,
         strict=strict,
         coerce_numbers_to_str=coerce_numbers_to_str,
@@ -1766,6 +1770,35 @@ enum_schema(
     members: list[Any],
     *,
     sub_type: Literal["str", "int", "float"] | None = None,
+    missing: Callable[[Any], Any] | None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> EnumSchema
+
+```
+
+```python
+enum_schema(
+    cls: Any,
+    members: list[Any],
+    *,
+    sub_type: Literal["str", "int", "float"] | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> EnumSchema
+
+```
+
+```python
+enum_schema(
+    cls: Any,
+    members: list[Any],
+    *,
+    sub_type: Literal["str", "int", "float"] | None = None,
     missing: Callable[[Any], Any] | None = None,
     strict: bool | None = None,
     ref: str | None = None,
@@ -1794,7 +1827,7 @@ assert v.validate_python(2) is Color.GREEN
 
 Parameters:
 
-| Name | Type | Description | Default | | --- | --- | --- | --- | | `cls` | `Any` | The enum class | *required* | | `members` | `list[Any]` | The members of the enum, generally list(MyEnum.__members__.values()) | *required* | | `sub_type` | `Literal['str', 'int', 'float'] | None` | The type of the enum, either 'str' or 'int' or None for plain enums | `None` | | `missing` | `Callable[[Any], Any] | None` | A function to use when the value is not found in the enum, from _missing_ | `None` | | `strict` | `bool | None` | Whether to use strict mode, defaults to False | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `cls` | `Any` | The enum class | *required* | | `members` | `list[Any]` | The members of the enum, generally list(MyEnum.__members__.values()) | *required* | | `sub_type` | `Literal['str', 'int', 'float'] | None` | The type of the enum, either 'str' or 'int' or None for plain enums | `None` | | `missing` | `Callable[[Any], Any] | None` | Deprecated and no longer used, the _missing_ hook of the enum class is now called by the enum validator | `None` | | `strict` | `bool | None` | Whether to use strict mode, defaults to False | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
 
 Source code in `pydantic_core/core_schema.py`
 
@@ -1831,12 +1864,19 @@ def enum_schema(
         cls: The enum class
         members: The members of the enum, generally `list(MyEnum.__members__.values())`
         sub_type: The type of the enum, either 'str' or 'int' or None for plain enums
-        missing: A function to use when the value is not found in the enum, from `_missing_`
+        missing: Deprecated and no longer used, the `_missing_` hook of the enum class is now called by the enum validator
         strict: Whether to use strict mode, defaults to False
         ref: optional unique identifier of the schema, used to reference the schema in other places
         metadata: Any other information you want to include with the schema, not used by pydantic-core
         serialization: Custom serialization schema
     """
+    if missing is not None:
+        warnings.warn(
+            'The `missing` argument on `enum_schema()` is deprecated and no longer used.',
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
     return _dict_not_none(
         type='enum',
         cls=cls,
@@ -1855,30 +1895,69 @@ def enum_schema(
 
 ```python
 missing_sentinel_schema(
+    schema: CoreSchema | None = None,
+    *,
     metadata: dict[str, Any] | None = None,
-    serialization: SerSchema | None = None,
+    serialization: SerSchema | None = None
 ) -> MissingSentinelSchema
 
 ```
 
-Returns a schema for the `MISSING` sentinel.
+Returns a schema that matches the `MISSING` sentinel, or, if provided, the wrapped schema, e.g.:
+
+```py
+from pydantic_core import MISSING, SchemaValidator, core_schema
+
+schema = core_schema.missing_sentinel_schema(core_schema.int_schema())
+v = SchemaValidator(schema)
+assert v.validate_python(MISSING) is MISSING
+assert v.validate_python(1) == 1
+
+```
+
+If no schema is provided, only the `MISSING` sentinel is a valid input.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `CoreSchema | None` | The schema to wrap | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
 
 Source code in `pydantic_core/core_schema.py`
 
-```python
+````python
 def missing_sentinel_schema(
+    schema: CoreSchema | None = None,
+    *,
     metadata: dict[str, Any] | None = None,
     serialization: SerSchema | None = None,
 ) -> MissingSentinelSchema:
-    """Returns a schema for the `MISSING` sentinel."""
+    """
+    Returns a schema that matches the `MISSING` sentinel, or, if provided, the wrapped schema, e.g.:
+
+    ```py
+    from pydantic_core import MISSING, SchemaValidator, core_schema
+
+    schema = core_schema.missing_sentinel_schema(core_schema.int_schema())
+    v = SchemaValidator(schema)
+    assert v.validate_python(MISSING) is MISSING
+    assert v.validate_python(1) == 1
+    ```
+
+    If no schema is provided, only the `MISSING` sentinel is a valid input.
+
+    Args:
+        schema: The schema to wrap
+        metadata: Any other information you want to include with the schema, not used by pydantic-core
+        serialization: Custom serialization schema
+    """
 
     return _dict_not_none(
         type='missing-sentinel',
+        schema=schema,
         metadata=metadata,
         serialization=serialization,
     )
 
-```
+````
 
 ## ellipsis_schema
 
@@ -2177,6 +2256,96 @@ def list_schema(
     """
     return _dict_not_none(
         type='list',
+        items_schema=items_schema,
+        min_length=min_length,
+        max_length=max_length,
+        fail_fast=fail_fast,
+        strict=strict,
+        ref=ref,
+        metadata=metadata,
+        serialization=serialization,
+    )
+
+````
+
+## deque_schema
+
+```python
+deque_schema(
+    items_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: IncExSeqOrElseSerSchema | None = None
+) -> DequeSchema
+
+```
+
+Returns a schema that matches a collections.deque value, e.g.:
+
+```py
+from collections import deque
+
+from pydantic_core import SchemaValidator, core_schema
+
+schema = core_schema.deque_schema(core_schema.int_schema(), min_length=0, max_length=10)
+v = SchemaValidator(schema)
+assert v.validate_python(['4']) == deque([4])
+
+```
+
+In lax mode, any iterable (except strings, bytes and mappings) is accepted and converted to a deque. If the input is a deque instance, its `maxlen` is preserved on the output.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `items_schema` | `CoreSchema | None` | The value must be a deque of items that match this schema | `None` | | `min_length` | `int | None` | The value must be a deque with at least this many items | `None` | | `max_length` | `int | None` | The value must be a deque with at most this many items | `None` | | `fail_fast` | `bool | None` | Stop validation on the first error | `None` | | `strict` | `bool | None` | The value must be a deque instance | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `IncExSeqOrElseSerSchema | None` | Custom serialization schema | `None` |
+
+Source code in `pydantic_core/core_schema.py`
+
+````python
+def deque_schema(
+    items_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: IncExSeqOrElseSerSchema | None = None,
+) -> DequeSchema:
+    """
+    Returns a schema that matches a [`collections.deque`][] value, e.g.:
+
+    ```py
+    from collections import deque
+
+    from pydantic_core import SchemaValidator, core_schema
+
+    schema = core_schema.deque_schema(core_schema.int_schema(), min_length=0, max_length=10)
+    v = SchemaValidator(schema)
+    assert v.validate_python(['4']) == deque([4])
+    ```
+
+    In lax mode, any iterable (except strings, bytes and mappings) is accepted and converted to a deque.
+    If the input is a deque instance, its `maxlen` is preserved on the output.
+
+    Args:
+        items_schema: The value must be a deque of items that match this schema
+        min_length: The value must be a deque with at least this many items
+        max_length: The value must be a deque with at most this many items
+        fail_fast: Stop validation on the first error
+        strict: The value must be a deque instance
+        ref: optional unique identifier of the schema, used to reference the schema in other places
+        metadata: Any other information you want to include with the schema, not used by pydantic-core
+        serialization: Custom serialization schema
+    """
+    return _dict_not_none(
+        type='deque',
         items_schema=items_schema,
         min_length=min_length,
         max_length=max_length,
@@ -2889,6 +3058,200 @@ def frozendict_schema(
 
 ````
 
+## ordered_dict_schema
+
+```python
+ordered_dict_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> OrderedDictSchema
+
+```
+
+Returns a schema that matches a collections.OrderedDict value, e.g.:
+
+```py
+from collections import OrderedDict
+
+from pydantic_core import SchemaValidator, core_schema
+
+schema = core_schema.ordered_dict_schema(
+    keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+)
+v = SchemaValidator(schema)
+assert v.validate_python({'a': '1', 'b': 2}) == OrderedDict({'a': 1, 'b': 2})
+
+```
+
+In lax mode, any mapping is accepted and converted to an `OrderedDict`.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `keys_schema` | `CoreSchema | None` | The value must be an OrderedDict with keys that match this schema | `None` | | `values_schema` | `CoreSchema | None` | The value must be an OrderedDict with values that match this schema | `None` | | `min_length` | `int | None` | The value must be an OrderedDict with at least this many items | `None` | | `max_length` | `int | None` | The value must be an OrderedDict with at most this many items | `None` | | `fail_fast` | `bool | None` | Stop validation on the first error | `None` | | `strict` | `bool | None` | The value must be an OrderedDict instance | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
+
+Source code in `pydantic_core/core_schema.py`
+
+````python
+def ordered_dict_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None,
+) -> OrderedDictSchema:
+    """
+    Returns a schema that matches a [`collections.OrderedDict`][] value, e.g.:
+
+    ```py
+    from collections import OrderedDict
+
+    from pydantic_core import SchemaValidator, core_schema
+
+    schema = core_schema.ordered_dict_schema(
+        keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+    )
+    v = SchemaValidator(schema)
+    assert v.validate_python({'a': '1', 'b': 2}) == OrderedDict({'a': 1, 'b': 2})
+    ```
+
+    In lax mode, any mapping is accepted and converted to an `OrderedDict`.
+
+    Args:
+        keys_schema: The value must be an `OrderedDict` with keys that match this schema
+        values_schema: The value must be an `OrderedDict` with values that match this schema
+        min_length: The value must be an `OrderedDict` with at least this many items
+        max_length: The value must be an `OrderedDict` with at most this many items
+        fail_fast: Stop validation on the first error
+        strict: The value must be an `OrderedDict` instance
+        ref: optional unique identifier of the schema, used to reference the schema in other places
+        metadata: Any other information you want to include with the schema, not used by pydantic-core
+        serialization: Custom serialization schema
+    """
+    return _dict_not_none(
+        type='ordered-dict',
+        keys_schema=keys_schema,
+        values_schema=values_schema,
+        min_length=min_length,
+        max_length=max_length,
+        fail_fast=fail_fast,
+        strict=strict,
+        ref=ref,
+        metadata=metadata,
+        serialization=serialization,
+    )
+
+````
+
+## counter_schema
+
+```python
+counter_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> CounterSchema
+
+```
+
+Returns a schema that matches a collections.Counter value, e.g.:
+
+```py
+from collections import Counter
+
+from pydantic_core import SchemaValidator, core_schema
+
+schema = core_schema.counter_schema(
+    keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+)
+v = SchemaValidator(schema)
+assert v.validate_python({'a': '1', 'b': 2}) == Counter({'a': 1, 'b': 2})
+
+```
+
+In lax mode, any mapping is accepted and converted to a `Counter`.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `keys_schema` | `CoreSchema | None` | The value must be a Counter with keys that match this schema | `None` | | `values_schema` | `CoreSchema | None` | The value must be a Counter with values that match this schema | `None` | | `min_length` | `int | None` | The value must be a Counter with at least this many items | `None` | | `max_length` | `int | None` | The value must be a Counter with at most this many items | `None` | | `fail_fast` | `bool | None` | Stop validation on the first error | `None` | | `strict` | `bool | None` | The value must be a Counter instance | `None` | | `ref` | `str | None` | optional unique identifier of the schema, used to reference the schema in other places | `None` | | `metadata` | `dict[str, Any] | None` | Any other information you want to include with the schema, not used by pydantic-core | `None` | | `serialization` | `SerSchema | None` | Custom serialization schema | `None` |
+
+Source code in `pydantic_core/core_schema.py`
+
+````python
+def counter_schema(
+    keys_schema: CoreSchema | None = None,
+    values_schema: CoreSchema | None = None,
+    *,
+    min_length: int | None = None,
+    max_length: int | None = None,
+    fail_fast: bool | None = None,
+    strict: bool | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None,
+) -> CounterSchema:
+    """
+    Returns a schema that matches a [`collections.Counter`][] value, e.g.:
+
+    ```py
+    from collections import Counter
+
+    from pydantic_core import SchemaValidator, core_schema
+
+    schema = core_schema.counter_schema(
+        keys_schema=core_schema.str_schema(), values_schema=core_schema.int_schema()
+    )
+    v = SchemaValidator(schema)
+    assert v.validate_python({'a': '1', 'b': 2}) == Counter({'a': 1, 'b': 2})
+    ```
+
+    In lax mode, any mapping is accepted and converted to a `Counter`.
+
+    Args:
+        keys_schema: The value must be a `Counter` with keys that match this schema
+        values_schema: The value must be a `Counter` with values that match this schema
+        min_length: The value must be a `Counter` with at least this many items
+        max_length: The value must be a `Counter` with at most this many items
+        fail_fast: Stop validation on the first error
+        strict: The value must be a `Counter` instance
+        ref: optional unique identifier of the schema, used to reference the schema in other places
+        metadata: Any other information you want to include with the schema, not used by pydantic-core
+        serialization: Custom serialization schema
+    """
+    return _dict_not_none(
+        type='counter',
+        keys_schema=keys_schema,
+        values_schema=values_schema,
+        min_length=min_length,
+        max_length=max_length,
+        fail_fast=fail_fast,
+        strict=strict,
+        ref=ref,
+        metadata=metadata,
+        serialization=serialization,
+    )
+
+````
+
 ## no_info_before_validator_function
 
 ```python
@@ -2977,6 +3340,33 @@ def no_info_before_validator_function(
 ````
 
 ## with_info_before_validator_function
+
+```python
+with_info_before_validator_function(
+    function: WithInfoValidatorFunction,
+    schema: CoreSchema,
+    *,
+    field_name: str | None,
+    ref: str | None = None,
+    json_schema_input_schema: CoreSchema | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> BeforeValidatorFunctionSchema
+
+```
+
+```python
+with_info_before_validator_function(
+    function: WithInfoValidatorFunction,
+    schema: CoreSchema,
+    *,
+    ref: str | None = None,
+    json_schema_input_schema: CoreSchema | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> BeforeValidatorFunctionSchema
+
+```
 
 ```python
 with_info_before_validator_function(
@@ -3162,6 +3552,31 @@ def no_info_after_validator_function(
 ````
 
 ## with_info_after_validator_function
+
+```python
+with_info_after_validator_function(
+    function: WithInfoValidatorFunction,
+    schema: CoreSchema,
+    *,
+    field_name: str | None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> AfterValidatorFunctionSchema
+
+```
+
+```python
+with_info_after_validator_function(
+    function: WithInfoValidatorFunction,
+    schema: CoreSchema,
+    *,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> AfterValidatorFunctionSchema
+
+```
 
 ```python
 with_info_after_validator_function(
@@ -3357,6 +3772,33 @@ with_info_wrap_validator_function(
     function: WithInfoWrapValidatorFunction,
     schema: CoreSchema,
     *,
+    field_name: str | None,
+    json_schema_input_schema: CoreSchema | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> WrapValidatorFunctionSchema
+
+```
+
+```python
+with_info_wrap_validator_function(
+    function: WithInfoWrapValidatorFunction,
+    schema: CoreSchema,
+    *,
+    json_schema_input_schema: CoreSchema | None = None,
+    ref: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> WrapValidatorFunctionSchema
+
+```
+
+```python
+with_info_wrap_validator_function(
+    function: WithInfoWrapValidatorFunction,
+    schema: CoreSchema,
+    *,
     field_name: str | None = None,
     json_schema_input_schema: CoreSchema | None = None,
     ref: str | None = None,
@@ -3531,6 +3973,31 @@ def no_info_plain_validator_function(
 ````
 
 ## with_info_plain_validator_function
+
+```python
+with_info_plain_validator_function(
+    function: WithInfoValidatorFunction,
+    *,
+    field_name: str | None,
+    ref: str | None = None,
+    json_schema_input_schema: CoreSchema | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> PlainValidatorFunctionSchema
+
+```
+
+```python
+with_info_plain_validator_function(
+    function: WithInfoValidatorFunction,
+    *,
+    ref: str | None = None,
+    json_schema_input_schema: CoreSchema | None = None,
+    metadata: dict[str, Any] | None = None,
+    serialization: SerSchema | None = None
+) -> PlainValidatorFunctionSchema
+
+```
 
 ```python
 with_info_plain_validator_function(

@@ -843,49 +843,11 @@ def decimal_schema(self, schema: core_schema.DecimalSchema) -> JsonSchemaValue:
     Returns:
         The generated JSON schema.
     """
-
-    def get_decimal_pattern(schema: core_schema.DecimalSchema) -> str:
-        max_digits = schema.get('max_digits')
-        decimal_places = schema.get('decimal_places')
-
-        pattern = (
-            r'^(?!^[-+.]*$)[+-]?0*'  # check it is not empty string and not one or sequence of ".+-" characters.
-        )
-
-        # Case 1: Both max_digits and decimal_places are set
-        if max_digits is not None and decimal_places is not None:
-            integer_places = max(0, max_digits - decimal_places)
-            pattern += (
-                rf'(?:'
-                rf'\d{{0,{integer_places}}}'
-                rf'|'
-                rf'(?=[\d.]{{1,{max_digits + 1}}}0*$)'
-                rf'\d{{0,{integer_places}}}\.\d{{0,{decimal_places}}}0*$'
-                rf')'
-            )
-
-        # Case 2: Only max_digits is set
-        elif max_digits is not None and decimal_places is None:
-            pattern += (
-                rf'(?:'
-                rf'\d{{0,{max_digits}}}'
-                rf'|'
-                rf'(?=[\d.]{{1,{max_digits + 1}}}0*$)'
-                rf'\d*\.\d*0*$'
-                rf')'
-            )
-
-        # Case 3: Only decimal_places is set
-        elif max_digits is None and decimal_places is not None:
-            pattern += rf'\d*\.?\d{{0,{decimal_places}}}0*$'
-
-        # Case 4: Both are None (no restrictions)
-        else:
-            pattern += r'\d*\.?\d*$'  # look for arbitrary integer or decimal
-
-        return pattern
-
-    json_schema = self.str_schema(core_schema.str_schema(pattern=get_decimal_pattern(schema)))
+    str_schema = core_schema.str_schema()
+    pattern = self.get_decimal_pattern(schema)
+    if pattern is not None:
+        str_schema['pattern'] = pattern
+    json_schema = self.str_schema(str_schema)
     if self.mode == 'validation':
         multiple_of = schema.get('multiple_of')
         le = schema.get('le')
@@ -908,6 +870,125 @@ def decimal_schema(self, schema: core_schema.DecimalSchema) -> JsonSchemaValue:
             ],
         }
     return json_schema
+
+```
+
+### get_decimal_pattern
+
+```python
+get_decimal_pattern(schema: DecimalSchema) -> str | None
+
+```
+
+Get the regular expression pattern to apply to the string representation of a decimal.
+
+By default, no pattern is applied (`None` is returned). Subclasses can override this method to return a custom pattern, or build_decimal_pattern() can be used to get a pattern reflecting the `max_digits` and `decimal_places` constraints:
+
+```python
+from pydantic.json_schema import GenerateJsonSchema
+
+class MyGenerateJsonSchema(GenerateJsonSchema):
+    def get_decimal_pattern(self, schema):
+        return self.build_decimal_pattern(schema)
+
+```
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `DecimalSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `str | None` | The regular expression pattern, or None if no pattern should be applied. |
+
+Source code in `pydantic/json_schema.py`
+
+````python
+def get_decimal_pattern(self, schema: core_schema.DecimalSchema) -> str | None:
+    """Get the regular expression pattern to apply to the string representation of a decimal.
+
+    By default, no pattern is applied (`None` is returned). Subclasses can override this method
+    to return a custom pattern, or [`build_decimal_pattern()`][pydantic.json_schema.GenerateJsonSchema.build_decimal_pattern]
+    can be used to get a pattern reflecting the `max_digits` and `decimal_places` constraints:
+
+    ```python
+    from pydantic.json_schema import GenerateJsonSchema
+
+    class MyGenerateJsonSchema(GenerateJsonSchema):
+        def get_decimal_pattern(self, schema):
+            return self.build_decimal_pattern(schema)
+    ```
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The regular expression pattern, or `None` if no pattern should be applied.
+    """
+    return None
+
+````
+
+### build_decimal_pattern
+
+```python
+build_decimal_pattern(schema: DecimalSchema) -> str
+
+```
+
+Build a regular expression pattern for the string representation of a decimal.
+
+The pattern takes into account the `max_digits` and `decimal_places` constraints, and the current mode:
+
+- In `'validation'` mode, the pattern accepts the string syntax understood by the Decimal constructor. The `max_digits` and `decimal_places` constraints are only reflected for strings *without* an exponent: strings using an exponent are accepted as long as they are syntactically valid, as the constraints can't be expressed with a regular expression in this case.
+- In `'serialization'` mode, the pattern exactly describes the strings produced by pydantic (i.e. by `str(decimal)`) for decimals satisfying the constraints, including the ones using scientific notation (e.g. `'1E-7'`, `'1.5E+3'`).
+
+In both modes, trailing zeros in the decimal part are not counted (e.g. `'1.10'` is accepted with `decimal_places=1`), consistent with the validation behavior. If `allow_inf_nan` is enabled (on the core schema or in the configuration), the string representations of infinity and NaN are also accepted.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `DecimalSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `str` | The regular expression pattern. |
+
+Source code in `pydantic/json_schema.py`
+
+```python
+def build_decimal_pattern(self, schema: core_schema.DecimalSchema) -> str:
+    """Build a regular expression pattern for the string representation of a decimal.
+
+    The pattern takes into account the `max_digits` and `decimal_places` constraints, and the current
+    mode:
+
+    - In `'validation'` mode, the pattern accepts the string syntax understood by the [`Decimal`][decimal.Decimal]
+      constructor. The `max_digits` and `decimal_places` constraints are only reflected for strings
+      *without* an exponent: strings using an exponent are accepted as long as they are syntactically valid,
+      as the constraints can't be expressed with a regular expression in this case.
+    - In `'serialization'` mode, the pattern exactly describes the strings produced by pydantic
+      (i.e. by `str(decimal)`) for decimals satisfying the constraints,
+      including the ones using scientific notation (e.g. `'1E-7'`, `'1.5E+3'`).
+
+    In both modes, trailing zeros in the decimal part are not counted (e.g. `'1.10'` is accepted with
+    `decimal_places=1`), consistent with the validation behavior. If `allow_inf_nan` is enabled (on the
+    core schema or in the configuration), the string representations of infinity and NaN are also accepted.
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The regular expression pattern.
+    """
+    max_digits = schema.get('max_digits')
+    decimal_places = schema.get('decimal_places')
+    allow_inf_nan = schema.get('allow_inf_nan')
+    if allow_inf_nan is None:
+        allow_inf_nan = self._config.config_dict.get('allow_inf_nan', False)
+    if self.mode == 'validation':
+        return _decimal_validation_pattern(max_digits, decimal_places, allow_inf_nan)
+    else:
+        return _decimal_serialization_pattern(max_digits, decimal_places, allow_inf_nan)
 
 ```
 
@@ -1191,7 +1272,7 @@ missing_sentinel_schema(
 
 ```
 
-Generates a JSON schema that matches the `MISSING` sentinel value.
+Generates a JSON schema that matches a schema that allows the `MISSING` sentinel value.
 
 Parameters:
 
@@ -1205,7 +1286,7 @@ Source code in `pydantic/json_schema.py`
 
 ```python
 def missing_sentinel_schema(self, schema: core_schema.MissingSentinelSchema) -> JsonSchemaValue:
-    """Generates a JSON schema that matches the `MISSING` sentinel value.
+    """Generates a JSON schema that matches a schema that allows the `MISSING` sentinel value.
 
     Args:
         schema: The core schema.
@@ -1213,7 +1294,10 @@ def missing_sentinel_schema(self, schema: core_schema.MissingSentinelSchema) -> 
     Returns:
         The generated JSON schema.
     """
-    raise PydanticOmit
+    inner_schema = schema.get('schema')
+    if inner_schema is None:
+        raise PydanticOmit
+    return self.generate_inner(inner_schema)
 
 ```
 
@@ -1450,6 +1534,42 @@ Source code in `pydantic/json_schema.py`
 ```python
 def list_schema(self, schema: core_schema.ListSchema) -> JsonSchemaValue:
     """Returns a schema that matches a list schema.
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The generated JSON schema.
+    """
+    items_schema = {} if 'items_schema' not in schema else self.generate_inner(schema['items_schema'])
+    json_schema = {'type': 'array', 'items': items_schema}
+    self.update_with_validations(json_schema, schema, self.ValidationsMapping.array)
+    return json_schema
+
+```
+
+### deque_schema
+
+```python
+deque_schema(schema: DequeSchema) -> JsonSchemaValue
+
+```
+
+Returns a schema that matches a deque schema.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `DequeSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `JsonSchemaValue` | The generated JSON schema. |
+
+Source code in `pydantic/json_schema.py`
+
+```python
+def deque_schema(self, schema: core_schema.DequeSchema) -> JsonSchemaValue:
+    """Returns a schema that matches a deque schema.
 
     Args:
         schema: The core schema.
@@ -1738,6 +1858,74 @@ Source code in `pydantic/json_schema.py`
 ```python
 def frozendict_schema(self, schema: core_schema.FrozenDictSchema) -> JsonSchemaValue:
     """Generates a JSON schema that matches a frozendict schema.
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The generated JSON schema.
+    """
+    return self._common_dict_schema(schema)
+
+```
+
+### ordered_dict_schema
+
+```python
+ordered_dict_schema(
+    schema: OrderedDictSchema,
+) -> JsonSchemaValue
+
+```
+
+Generates a JSON schema that matches an `OrderedDict` schema.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `OrderedDictSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `JsonSchemaValue` | The generated JSON schema. |
+
+Source code in `pydantic/json_schema.py`
+
+```python
+def ordered_dict_schema(self, schema: core_schema.OrderedDictSchema) -> JsonSchemaValue:
+    """Generates a JSON schema that matches an `OrderedDict` schema.
+
+    Args:
+        schema: The core schema.
+
+    Returns:
+        The generated JSON schema.
+    """
+    return self._common_dict_schema(schema)
+
+```
+
+### counter_schema
+
+```python
+counter_schema(schema: CounterSchema) -> JsonSchemaValue
+
+```
+
+Generates a JSON schema that matches a `Counter` schema.
+
+Parameters:
+
+| Name | Type | Description | Default | | --- | --- | --- | --- | | `schema` | `CounterSchema` | The core schema. | *required* |
+
+Returns:
+
+| Type | Description | | --- | --- | | `JsonSchemaValue` | The generated JSON schema. |
+
+Source code in `pydantic/json_schema.py`
+
+```python
+def counter_schema(self, schema: core_schema.CounterSchema) -> JsonSchemaValue:
+    """Generates a JSON schema that matches a `Counter` schema.
 
     Args:
         schema: The core schema.
@@ -3751,6 +3939,8 @@ def field_title_should_be_set(self, schema: CoreSchemaOrField) -> bool:
             return False
         if schema['type'] in {'default', 'nullable', 'definitions'}:
             return self.field_title_should_be_set(schema['schema'])  # type: ignore[typeddict-item]
+        if schema['type'] == 'missing-sentinel' and (inner_schema := schema.get('schema')) is not None:
+            return self.field_title_should_be_set(inner_schema)
         if _core_utils.is_function_with_inner_schema(schema):
             return self.field_title_should_be_set(schema['schema'])
         if schema['type'] == 'definition-ref':
