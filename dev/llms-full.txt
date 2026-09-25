@@ -6479,6 +6479,73 @@ del os.environ['SUB_VAR1']
 
 ```
 
+### Unknown environment variables
+
+Environment variables that do not match a settings field or its alias are ignored, even if they start with `env_prefix` and `extra='forbid'` is set. The `extra` setting validates inputs passed to the model; it does not check every name in `os.environ`. A misspelled field name can therefore leave a default value in use without raising an error:
+
+```py
+import os
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='APP_', extra='forbid')
+    port: int = 5432
+
+
+os.environ['APP_PRT'] = '6543'  # (1)!
+print(Settings().port)
+#> 5432
+del os.environ['APP_PRT']
+
+```
+
+1. Misspelled, so it matches no field and is dropped before validation runs.
+
+The same applies to nested models: an incorrect `env_nested_delimiter` keeps the variable from matching a field. Once a variable *does* match a known field's nested prefix, however, its contents are passed to that field for validation, so an unknown key inside a nested model can raise a `ValidationError` if that nested model has `extra='forbid'`:
+
+```py
+import os
+
+from pydantic import BaseModel, ConfigDict, ValidationError
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Database(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    port: int = 5432
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix='APP_', env_nested_delimiter='__', extra='forbid'
+    )
+    database: Database = Database()
+
+
+# A single underscore does not match the database field's nested prefix.
+os.environ['APP_DATABASE_PORT'] = '6543'
+print(Settings().database.port)
+#> 5432
+del os.environ['APP_DATABASE_PORT']
+
+# The nested prefix matches, so the unknown key reaches Database's validation.
+os.environ['APP_DATABASE__PRT'] = '6543'
+try:
+    Settings()
+except ValidationError as exc:
+    print(exc.errors()[0]['type'])
+    #> extra_forbidden
+del os.environ['APP_DATABASE__PRT']
+
+```
+
+For extra variables loaded from `.env` files and the effect of `dotenv_filtering`, see [Dotenv (.env) support](#dotenv-env-support).
+
+### Environment variable prefix targets
+
 To apply `env_prefix` not only to variable names but also to aliases, set `env_prefix_target='all'`. To apply `env_prefix` only to aliases and not to variable names, set `env_prefix_target='alias'`. To apply `env_prefix` only to variable names (the default behavior), set `env_prefix_target='variable'`.
 
 ```py
@@ -6677,7 +6744,7 @@ Sub model has to inherit from `pydantic.BaseModel`, Otherwise `pydantic-settings
 
 Note
 
-The `env_nested_delimiter` option applies only to variables that point to declared fields. If a variable points to an unknown field no conversion will take place.
+The `env_nested_delimiter` option applies to variables that match a declared top-level field's name or alias. Unknown keys within that field's nested value are still subject to the nested model's validation. See [Unknown environment variables](#unknown-environment-variables).
 
 As an example, given the following environment variables:
 
@@ -14449,7 +14516,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
 
     @_utils.deprecated_instance_property
     @classmethod
-    def model_fields(cls) -> dict[str, FieldInfo]:
+    def model_fields(cls) -> Dict[str, FieldInfo]:  # noqa: UP006
         """A mapping of field names to their respective [`FieldInfo`][pydantic.fields.FieldInfo] instances.
 
         !!! warning
@@ -14460,7 +14527,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
 
     @_utils.deprecated_instance_property
     @classmethod
-    def model_computed_fields(cls) -> dict[str, ComputedFieldInfo]:
+    def model_computed_fields(cls) -> Dict[str, ComputedFieldInfo]:  # noqa: UP006
         """A mapping of computed field names to their respective [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] instances.
 
         !!! warning
@@ -14470,7 +14537,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         return getattr(cls, '__pydantic_computed_fields__', {})
 
     @property
-    def model_extra(self) -> dict[str, Any] | None:
+    def model_extra(self) -> Dict[str, Any] | None:  # noqa: UP006
         """Get extra fields set during validation.
 
         Returns:
@@ -14644,7 +14711,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         fallback: Callable[[Any], Any] | None = None,
         serialize_as_any: bool = False,
         polymorphic_serialization: bool | None = None,
-    ) -> dict[str, Any]:
+    ) -> Dict[str, Any]:  # noqa: UP006
         """!!! abstract "Usage Documentation"
             [`model_dump`](../concepts/serialization.md#python-mode)
 
@@ -14770,7 +14837,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         mode: JsonSchemaMode = 'validation',
         *,
         union_format: Literal['any_of', 'primitive_type_array'] = 'any_of',
-    ) -> dict[str, Any]:
+    ) -> Dict[str, Any]:  # noqa: UP006
         """Generates a JSON schema for a model class.
 
         Args:
@@ -15208,7 +15275,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
 
         return m
 
-    def __deepcopy__(self, memo: dict[int, Any] | None = None) -> Self:
+    def __deepcopy__(self, memo: Dict[int, Any] | None = None) -> Self:  # noqa: UP006
         """Returns a deep copy of the model."""
         cls = type(self)
         m = cls.__new__(cls)
@@ -15363,7 +15430,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
         def __replace__(self, **changes: Any) -> Self:
             return self.model_copy(update=changes)
 
-    def __getstate__(self) -> dict[Any, Any]:
+    def __getstate__(self) -> Dict[Any, Any]:  # noqa: UP006
         private = self.__pydantic_private__
         if private:
             private = {k: v for k, v in private.items() if v is not PydanticUndefined}
@@ -15374,7 +15441,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
             '__pydantic_private__': private,
         }
 
-    def __setstate__(self, state: dict[Any, Any]) -> None:
+    def __setstate__(self, state: Dict[Any, Any]) -> None:  # noqa: UP006
         _object_setattr(self, '__pydantic_fields_set__', state.get('__pydantic_fields_set__', {}))
         _object_setattr(self, '__pydantic_extra__', state.get('__pydantic_extra__', {}))
         _object_setattr(self, '__pydantic_private__', state.get('__pydantic_private__', {}))
@@ -15519,7 +15586,7 @@ class BaseModel(metaclass=_model_construction.ModelMetaclass):
     @typing_extensions.deprecated(
         'The `__fields__` attribute is deprecated, use the `model_fields` class property instead.', category=None
     )
-    def __fields__(self) -> dict[str, FieldInfo]:
+    def __fields__(self) -> Dict[str, FieldInfo]:  # noqa: UP006
         warnings.warn(
             'The `__fields__` attribute is deprecated, use the `model_fields` class property instead.',
             category=PydanticDeprecatedSince20,
@@ -15966,7 +16033,7 @@ Configuration for the model, should be a dictionary conforming to ConfigDict.
 ### model_fields
 
 ```python
-model_fields() -> dict[str, FieldInfo]
+model_fields() -> Dict[str, FieldInfo]
 
 ```
 
@@ -15981,7 +16048,7 @@ Source code in `pydantic/main.py`
 ```python
 @_utils.deprecated_instance_property
 @classmethod
-def model_fields(cls) -> dict[str, FieldInfo]:
+def model_fields(cls) -> Dict[str, FieldInfo]:  # noqa: UP006
     """A mapping of field names to their respective [`FieldInfo`][pydantic.fields.FieldInfo] instances.
 
     !!! warning
@@ -15995,7 +16062,7 @@ def model_fields(cls) -> dict[str, FieldInfo]:
 ### model_computed_fields
 
 ```python
-model_computed_fields() -> dict[str, ComputedFieldInfo]
+model_computed_fields() -> Dict[str, ComputedFieldInfo]
 
 ```
 
@@ -16010,7 +16077,7 @@ Source code in `pydantic/main.py`
 ```python
 @_utils.deprecated_instance_property
 @classmethod
-def model_computed_fields(cls) -> dict[str, ComputedFieldInfo]:
+def model_computed_fields(cls) -> Dict[str, ComputedFieldInfo]:  # noqa: UP006
     """A mapping of computed field names to their respective [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] instances.
 
     !!! warning
@@ -16033,7 +16100,7 @@ The core schema of the model.
 ### model_extra
 
 ```python
-model_extra: dict[str, Any] | None
+model_extra: Dict[str, Any] | None
 
 ```
 
@@ -16041,7 +16108,7 @@ Get extra fields set during validation.
 
 Returns:
 
-| Type | Description | | --- | --- | | `dict[str, Any] | None` | A dictionary of extra fields, or None if config.extra is not set to "allow". |
+| Type | Description | | --- | --- | | `Dict[str, Any] | None` | A dictionary of extra fields, or None if config.extra is not set to "allow". |
 
 ### model_fields_set
 
@@ -16280,7 +16347,7 @@ model_dump(
     fallback: Callable[[Any], Any] | None = None,
     serialize_as_any: bool = False,
     polymorphic_serialization: bool | None = None
-) -> dict[str, Any]
+) -> Dict[str, Any]
 
 ```
 
@@ -16296,7 +16363,7 @@ Parameters:
 
 Returns:
 
-| Type | Description | | --- | --- | | `dict[str, Any]` | A dictionary representation of the model. |
+| Type | Description | | --- | --- | | `Dict[str, Any]` | A dictionary representation of the model. |
 
 Source code in `pydantic/main.py`
 
@@ -16318,7 +16385,7 @@ def model_dump(
     fallback: Callable[[Any], Any] | None = None,
     serialize_as_any: bool = False,
     polymorphic_serialization: bool | None = None,
-) -> dict[str, Any]:
+) -> Dict[str, Any]:  # noqa: UP006
     """!!! abstract "Usage Documentation"
         [`model_dump`](../concepts/serialization.md#python-mode)
 
@@ -16496,7 +16563,7 @@ model_json_schema(
     union_format: Literal[
         "any_of", "primitive_type_array"
     ] = "any_of"
-) -> dict[str, Any]
+) -> Dict[str, Any]
 
 ```
 
@@ -16508,7 +16575,7 @@ Parameters:
 
 Returns:
 
-| Type | Description | | --- | --- | | `dict[str, Any]` | The JSON schema for the given model class. |
+| Type | Description | | --- | --- | | `Dict[str, Any]` | The JSON schema for the given model class. |
 
 Source code in `pydantic/main.py`
 
@@ -16522,7 +16589,7 @@ def model_json_schema(
     mode: JsonSchemaMode = 'validation',
     *,
     union_format: Literal['any_of', 'primitive_type_array'] = 'any_of',
-) -> dict[str, Any]:
+) -> Dict[str, Any]:  # noqa: UP006
     """Generates a JSON schema for a model class.
 
     Args:
@@ -18120,7 +18187,7 @@ schema_generator: type[GenerateSchema] | None
 
 The `GenerateSchema` class to use during core schema generation.
 
-Deprecated in v2.10: The `GenerateSchema` class is private and highly subject to change.
+Deprecated in v2.10: The `GenerateSchema` class is private and highly subject to change. This setting no longer has any effect.
 
 ### json_schema_serialization_defaults_required
 
